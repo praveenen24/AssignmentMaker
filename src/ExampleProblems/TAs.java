@@ -1,3 +1,4 @@
+package ExampleProblems;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,7 +30,7 @@ public class TAs {
 
 		lp = GLPK.glp_create_prob();
 		System.out.println("Problem created");
-		GLPK.glp_set_prob_name(lp, "myProblem");
+		GLPK.glp_set_prob_name(lp, "taProblem");
 
 		GLPK.glp_add_cols(lp, 9);
 		GLPK.glp_set_col_name(lp, 1, "T1C1");
@@ -75,7 +76,7 @@ public class TAs {
 		GLPK.doubleArray_setitem(val, 2, 1.0);
 		GLPK.intArray_setitem(ind, 3, 3);
 		GLPK.doubleArray_setitem(val, 3, 1.0);
-		GLPK.glp_set_mat_row(lp, 1, 2, ind, val);
+		GLPK.glp_set_mat_row(lp, 1, 3, ind, val);
 		
 		GLPK.glp_set_row_name (lp , 2, "c2");
 		GLPK.glp_set_row_bnds(lp, 2, GLPKConstants.GLP_FX, 1, 1);
@@ -87,7 +88,7 @@ public class TAs {
 		GLPK.doubleArray_setitem(val, 2, 1.0);
 		GLPK.intArray_setitem(ind, 3, 6);
 		GLPK.doubleArray_setitem(val, 3, 1.0);
-		GLPK.glp_set_mat_row(lp, 2, 2, ind, val);
+		GLPK.glp_set_mat_row(lp, 2, 3, ind, val);
 
 		GLPK.glp_set_row_name (lp , 3, "c3");
 		GLPK.glp_set_row_bnds(lp, 3, GLPKConstants.GLP_FX, 1, 1);
@@ -99,7 +100,7 @@ public class TAs {
 		GLPK.doubleArray_setitem(val, 2, 1.0);
 		GLPK.intArray_setitem(ind, 3, 9);
 		GLPK.doubleArray_setitem(val, 3, 1.0);
-		GLPK.glp_set_mat_row(lp, 3, 2, ind, val);
+		GLPK.glp_set_mat_row(lp, 3, 3, ind, val);
 
 		// Define objective
 
@@ -124,7 +125,7 @@ public class TAs {
 
         // Retrieve solution
         if (ret == 0) {
-            write_lp_solution(lp);
+            DisplayLP.displayAllValues(lp);
         } else {
             System.out.println("The problem could not be solved");
         }
@@ -132,38 +133,5 @@ public class TAs {
         // Free memory
         GLPK.glp_delete_prob(lp);
 	}
-	
-    /**
-     * write simplex solution
-     * @param lp problem
-     */
-    static void write_lp_solution(glp_prob lp) {
-        int i;
-        int n;
-        String name;
-        Map<String, Double> map = new HashMap<String, Double>();
-        double val;
-
-        System.out.println("---------------------Solution---------------------------");
-        name = GLPK.glp_get_obj_name(lp);
-        val = GLPK.glp_get_obj_val(lp);
-        System.out.print(name);
-        System.out.print(" = ");
-        System.out.println(val);
-        n = GLPK.glp_get_num_cols(lp);
-        for (i = 1; i <= n; i++) {
-            name = GLPK.glp_get_col_name(lp, i);
-            val = GLPK.glp_get_col_prim(lp, i);
-            if (val != 0) map.put(name, val);
-            System.out.print(name);
-            System.out.print(" = ");
-            System.out.println(val);
-        }
-        
-        System.out.println("---------------------Assignments Made---------------------------");
-        for (Entry<String, Double> e : map.entrySet()) {
-        	System.out.println(e);
-        }
-    }
 
 }

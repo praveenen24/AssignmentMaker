@@ -1,3 +1,4 @@
+package ExampleProblems;
 import org.gnu.glpk.GLPK;
 import org.gnu.glpk.GLPKConstants;
 import org.gnu.glpk.SWIGTYPE_p_double;
@@ -13,9 +14,6 @@ public class Track {
 		SWIGTYPE_p_int ind;
 		SWIGTYPE_p_double val;
 		int ret;
-
-		System.out.println("Track and Field Problem");
-		
 		
 		System.out.println("-----------------------------Track and Field Problem-----------------------------");
 		
@@ -28,6 +26,8 @@ public class Track {
 		System.out.println("A5 |     0    |     1    |     3    |     2    |     3    |     2    |     0    |");
 		
 
+		System.out.println("\nEvery Athlete must be be assigned to an event and every athlete can only compete in a maximum of 3 events");
+		
 		lp = GLPK.glp_create_prob();
 		System.out.println("");
 		GLPK.glp_set_prob_name(lp, "Track and Field Problem");
@@ -420,7 +420,7 @@ public class Track {
         
         // Retrieve solution
         if (ret == 0) {
-            DisplayLP.write_lp_solution(lp);
+            DisplayLP.displayAssignments(lp);
         } else {
             System.out.println("The problem could not be solved");
         }
