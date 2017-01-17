@@ -1,4 +1,4 @@
-package ExampleProblems;
+package Main;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
