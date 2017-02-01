@@ -88,9 +88,9 @@ public class PreferenceModule {
         	}
         }
       
-        LinearProblem lp = new LinearProblem("lp", list1, list2, constraints, GLPKConstants.GLP_MIN, preferences);
+        //LinearProblem lp = new LinearProblem("lp", list1, list2, constraints, GLPKConstants.GLP_MIN, preferences);
         System.out.println("Solving...");
         Thread.sleep(3000);
-        lp.solve();
+       // lp.solve();
 	}
 }

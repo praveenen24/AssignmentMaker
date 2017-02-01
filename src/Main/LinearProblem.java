@@ -21,7 +21,7 @@ public class LinearProblem {
 	private int ret;
 	private String name;
 	private List<Constraint> constraints;
-	private List<Integer> objectiveValues;
+	private Integer[][] objectiveValues;
 	private List<AssignmentVariable> assignmentVarbs;
 	private ObjectList objectList1;
 	private ObjectList objectList2;
@@ -30,7 +30,7 @@ public class LinearProblem {
 
 
 	public LinearProblem(String name, ObjectList objectList1, ObjectList objectList2, 
-			List<Constraint> constraints, int problemType, List<Integer> objectiveValues) {
+			List<Constraint> constraints, int problemType, Integer[][] objectiveValues) {
 		lp = GLPK.glp_create_prob();
 		GLPK.glp_set_prob_name(lp, name);
 		this.constraints = constraints;
@@ -49,12 +49,17 @@ public class LinearProblem {
 	
 	public void createVariables() {
 		int identifier = 1;
+		int index1 = 0;
+		int index2 = 0;
 		for (AssignmentObject o1 : objectList1) {
 			for (AssignmentObject o2 : objectList2) {
 				assignmentVarbs.add(new AssignmentVariable(identifier, o1.getName()+o2.getName(), 
-						new Bound(GLPKConstants.GLP_DB, 0, 1), objectiveValues.get(identifier-1)));
+						new Bound(GLPKConstants.GLP_DB, 0, 1), objectiveValues[index1][index2]));
 				identifier++;
+				index2++;
 			}
+			index1++;
+			index2 = 0;
 		}
 		addVariables();
 	}
@@ -120,6 +125,24 @@ public class LinearProblem {
         GLPK.glp_delete_prob(lp);
 	}
 	
+	public String getStringSolution() {
+		// Solve model
+        parm = new glp_smcp();
+        GLPK.glp_init_smcp(parm);
+        ret = GLPK.glp_simplex(lp, parm);
+        String output = "";
+        // Retrieve solution
+        if (ret == 0) {
+            output = DisplayLP.getOutput(lp);
+        } else {
+        	output = "The problem could not be solved";
+        }
+
+        // Free memory
+        GLPK.glp_delete_prob(lp);
+        return output;
+	}
+	
 	public static void main(String[] args) {
 		//Object Creation
 		AssignmentObject ta1 = new AssignmentObject("TA1");
@@ -152,8 +175,8 @@ public class LinearProblem {
 		c3.addValue(7, 1.0);c3.addValue(8, 1.0);c3.addValue(9, 1.0);
 		constraints.add(c1); constraints.add(c2); constraints.add(c3);
 		
-		LinearProblem lp = new LinearProblem("lp", tas, courses, constraints, GLPKConstants.GLP_MIN, objectiveVal);
-		lp.solve();
+		//LinearProblem lp = new LinearProblem("lp", tas, courses, constraints, GLPKConstants.GLP_MIN, objectiveVal);
+		//lp.solve();
 	}
 
 }

@@ -4,9 +4,9 @@
     <property name="dir.workspace" value="/Users/Prav/Documents/workspace"/>
     <property name="dir.jarfile" value="${dir.buildfile}"/>
     <target name="jar">
-        <jar destfile="${dir.jarfile}/module.jar" filesetmanifest="mergewithoutmain">
+        <jar destfile="${dir.jarfile}/AssignmentMaker.jar" filesetmanifest="mergewithoutmain">
             <manifest>
-                <attribute name="Main-Class" value="Modules.PreferenceModule"/>
+                <attribute name="Main-Class" value="GUI.View.MainFrame"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <fileset dir="${dir.workspace}/AssignmentMaker/bin"/>
@@ -17,5 +17,7 @@
 	<target name="run" depends="jar">
 	        <java jar="${dir.jarfile}/module.jar" fork="true"/>
 	</target>
+	
+	
 </project>
 

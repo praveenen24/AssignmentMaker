@@ -63,4 +63,35 @@ public class DisplayLP {
         	System.out.println(e);
         }
     }
+    
+    public static String getOutput(glp_prob lp) {
+    	StringBuilder builder = new StringBuilder();
+        int i;
+        int n;
+        String name;
+        Map<String, Double> map = new HashMap<String, Double>();
+        double val;
+
+        builder.append("\n-----------Solution-----------------");
+        name = GLPK.glp_get_obj_name(lp);
+        val = GLPK.glp_get_obj_val(lp);
+        builder.append("\n"+name);
+        builder.append(" = ");
+        builder.append(val);
+        n = GLPK.glp_get_num_cols(lp);
+        for (i = 1; i <= n; i++) {
+            name = GLPK.glp_get_col_name(lp, i);
+            val = GLPK.glp_get_col_prim(lp, i);
+            if (val != 0) map.put(name, val);
+            builder.append("\n"+name);
+            builder.append(" = ");
+            builder.append(val);
+        }
+        
+        builder.append("\n"+"-----------Assignments Made-----------------");
+        for (Entry<String, Double> e : map.entrySet()) {
+        	builder.append("\n"+e);
+        }
+        return builder.toString();
+    }
 }
