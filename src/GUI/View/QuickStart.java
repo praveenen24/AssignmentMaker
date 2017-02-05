@@ -1,19 +1,11 @@
 package GUI.View;
 
-import java.util.ArrayList;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import org.gnu.glpk.GLPKConstants;
-
 import GUI.Model.Model;
-import Main.AssignmentObject;
-import Main.Bound;
-import Main.Constraint;
-import Main.ObjectList;
 
 public class QuickStart extends JPanel {
 
@@ -29,7 +21,12 @@ public class QuickStart extends JPanel {
 		JTextField listName2 = new JTextField();
 		JTextField o1 = new JTextField();
 		JTextField o2 = new JTextField();
+		buildUI();
 
+	}
+	
+	public void buildUI() {
+		
 	}
 
 	public Model getModel() {

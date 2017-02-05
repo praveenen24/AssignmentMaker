@@ -95,12 +95,9 @@ public class ProblemSetupPanel extends JPanel {
 		springLayout.putConstraint(SpringLayout.EAST, run, -10, SpringLayout.EAST, this);
 		springLayout.putConstraint(SpringLayout.EAST, scoreLabel, -152, SpringLayout.EAST, this);
 		springLayout.putConstraint(SpringLayout.NORTH, scoreLabel, 2, SpringLayout.NORTH, scrollPane1);
-
 		springLayout.putConstraint(SpringLayout.WEST, comboBox, 6, SpringLayout.EAST, scrollPane2);
 		springLayout.putConstraint(SpringLayout.SOUTH, comboBox, -2, SpringLayout.SOUTH, this);
 		springLayout.putConstraint(SpringLayout.EAST, comboBox, -6, SpringLayout.WEST, run);
-		
-
 		springLayout.putConstraint(SpringLayout.EAST, score, -92, SpringLayout.EAST, this);
 		springLayout.putConstraint(SpringLayout.NORTH, scrollPane3, 77, SpringLayout.NORTH, this);
 		springLayout.putConstraint(SpringLayout.SOUTH, score, -9, SpringLayout.NORTH, scrollPane3);
@@ -108,8 +105,6 @@ public class ProblemSetupPanel extends JPanel {
 		springLayout.putConstraint(SpringLayout.WEST, score, 6, SpringLayout.EAST, scoreLabel);
 		springLayout.putConstraint(SpringLayout.NORTH, saveButton, -3, SpringLayout.NORTH, scrollPane1);
 		springLayout.putConstraint(SpringLayout.WEST, saveButton, 6, SpringLayout.EAST, score);
-		
-		//scrollPanes
 		springLayout.putConstraint(SpringLayout.NORTH, scrollPane1, 45, SpringLayout.NORTH, this);
 		springLayout.putConstraint(SpringLayout.WEST, scrollPane1, 20, SpringLayout.WEST, this);
 		springLayout.putConstraint(SpringLayout.WEST, scrollPane2, 134, SpringLayout.WEST, this);
