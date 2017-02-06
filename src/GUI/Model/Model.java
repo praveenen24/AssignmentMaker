@@ -1,7 +1,9 @@
 package GUI.Model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import Main.AssignmentObject;
 import Main.Constraint;
@@ -12,17 +14,20 @@ public class Model {
 	private ObjectList objectList1;
 	private ObjectList objectList2;
 	private List<Constraint> constraints;
+	private Map<String, Double> objectiveValues;
 
 	public Model(String listName1, String listName2) {
 		objectList1 = new ObjectList(listName1);
 		objectList2 = new ObjectList(listName2);
 		constraints = new ArrayList<Constraint>();
+		objectiveValues = new HashMap<String, Double>();
 	}
 	
 	public Model(ObjectList objectList1, ObjectList objectList2, List<Constraint> constraints) {
 		this.objectList1 = objectList1;
 		this.objectList2 = objectList2;
 		this.constraints = constraints;
+		objectiveValues = new HashMap<String, Double>();
 	}
 	
 	public void setList1Name(String name) {
@@ -75,5 +80,17 @@ public class Model {
 	
 	public void removeConstraint(Constraint c) {
 		constraints.remove(c);
+	}
+	
+	public Double getObjectiveValue(String key) {
+		return objectiveValues.get(key);
+	}
+	
+	public void putObjectiveValue(String key, Double value) {
+		objectiveValues.put(key, value);
+	}
+	
+	public Map<String, Double> getObjectiveValues() {
+		return objectiveValues;
 	}
 }

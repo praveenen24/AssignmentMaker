@@ -1,13 +1,19 @@
 package GUI.View;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
 import org.gnu.glpk.GLPKConstants;
 
+import Excel.SpreadSheetWriter;
 import GUI.Model.Model;
 import Main.AssignmentObject;
 import Main.Bound;
@@ -17,16 +23,29 @@ import Main.ObjectList;
 public class MainFrame extends JFrame {
 	
 	private JTabbedPane tabs;
-
+	private Model model;
+	
 	public MainFrame() {
 		super("Assignment Maker");
 		tabs = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.SCROLL_TAB_LAYOUT);
-		setupTabs(initialize());
+		setupMenuBar();
+		model = initialize();
+		setupTabs(model);
 		add(tabs);
 		setSize(600,400);
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setResizable(false);
+	}
+
+	private void setupMenuBar() {
+		JMenuBar bar = new JMenuBar();
+		JMenu fileMenu = new JMenu("File");
+		JMenuItem saveData = new JMenuItem("Save Data");
+		saveData.addActionListener(saveDataListener);
+		fileMenu.add(saveData);
+		bar.add(fileMenu);
+		setJMenuBar(bar);
 	}
 	
 	public void setupTabs(Model m) {
@@ -100,6 +119,14 @@ public class MainFrame extends JFrame {
 		return constraints;
 	}
 
+	private ActionListener saveDataListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String fileName = JOptionPane.showInputDialog("Enter file name");
+			SpreadSheetWriter writer = new SpreadSheetWriter(fileName, model);
+			writer.saveData();
+		}
+	};
 	
 	public static void main(String[] args) {
 		MainFrame f = new MainFrame();

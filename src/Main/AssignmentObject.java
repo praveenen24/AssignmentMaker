@@ -25,4 +25,21 @@ public class AssignmentObject {
 	public String toString() {
 		return name;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		AssignmentObject o1 = (AssignmentObject) o;
+		if (this.toString().equals(o.toString())) {
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		int result = 17;
+		result = 31 * result * name.hashCode();
+		result = 31 * result * propertyValues.hashCode();
+		return result;
+	}
 }

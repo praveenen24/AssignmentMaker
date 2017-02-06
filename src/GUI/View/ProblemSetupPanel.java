@@ -2,7 +2,8 @@ package GUI.View;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -20,6 +21,7 @@ import javax.swing.event.ListSelectionListener;
 
 import org.gnu.glpk.GLPKConstants;
 
+import Excel.SpreadSheetWriter;
 import GUI.Model.Model;
 import Main.AssignmentObject;
 import Main.LinearProblem;
@@ -41,7 +43,6 @@ public class ProblemSetupPanel extends JPanel {
 	private JButton run;
 	private JTextField score;
 	private JLabel scoreLabel;
-	private Integer[][] objectiveValues;
 	private JButton saveButton;
 
 	public ProblemSetupPanel(Model model) {
@@ -54,7 +55,6 @@ public class ProblemSetupPanel extends JPanel {
 		objectList1 = new JList<>(model1);
 		objectList2 = new JList<>(model2);
 		score = new JTextField();
-		objectiveValues = new Integer[model.getObjectList1().size()][model.getObjectList2().size()];
 		solution = new JTextArea("Click Solve to Generate Solution ... ");
 		scrollPane1 = new JScrollPane(objectList1);
 		scrollPane2 = new JScrollPane(objectList2);
@@ -129,9 +129,9 @@ public class ProblemSetupPanel extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			LinearProblem lp;
 			if (comboBox.getSelectedItem().toString().equals("Minimize")) {
-				lp = new LinearProblem("LP", model.getObjectList1(), model.getObjectList2(), model.getConstraints(), GLPKConstants.GLP_MIN, objectiveValues);
+				lp = new LinearProblem("LP", model.getObjectList1(), model.getObjectList2(), model.getConstraints(), GLPKConstants.GLP_MIN, model.getObjectiveValues());
 			} else if (comboBox.getSelectedItem().toString().equals("Maximize")) {
-				lp = new LinearProblem("LP", model.getObjectList1(), model.getObjectList2(), model.getConstraints(), GLPKConstants.GLP_MAX, objectiveValues);
+				lp = new LinearProblem("LP", model.getObjectList1(), model.getObjectList2(), model.getConstraints(), GLPKConstants.GLP_MAX, model.getObjectiveValues());
 			} else {
 				JOptionPane.showMessageDialog(null, "No Solution Found", "ERROR", JOptionPane.ERROR_MESSAGE);
 				return;
@@ -146,8 +146,9 @@ public class ProblemSetupPanel extends JPanel {
 			int index1 = objectList1.getSelectedIndex();
 			int index2 = objectList2.getSelectedIndex();
 			if (index1 != -1 && index2 != -1) {
-				if (objectiveValues[index1][index2] != null) {
-					score.setText(Integer.toString(objectiveValues[index1][index2]));
+				String key = objectList1.getSelectedValue().getName()+objectList2.getSelectedValue().getName();
+				if (model.getObjectiveValue(key) != null) {
+					score.setText(Double.toString(model.getObjectiveValue(key)));
 				} else {
 					score.setText("");
 				}
@@ -160,9 +161,12 @@ public class ProblemSetupPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			int s;
+			double d;
 			try {
 				s = Integer.parseInt(score.getText());
-				objectiveValues[objectList1.getSelectedIndex()][objectList2.getSelectedIndex()] = s;
+				d = Double.parseDouble(score.getText());
+				String key = objectList1.getSelectedValue().getName() + objectList2.getSelectedValue().getName();
+				model.putObjectiveValue(key, d);
 			} catch (Exception ex) {
 				score.setText("Invalid Entry");
 			}

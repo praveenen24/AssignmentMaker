@@ -1,8 +1,10 @@
 package Main;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -21,7 +23,7 @@ public class LinearProblem {
 	private int ret;
 	private String name;
 	private List<Constraint> constraints;
-	private Integer[][] objectiveValues;
+	private Map<String, Double> objectiveValues;
 	private List<AssignmentVariable> assignmentVarbs;
 	private ObjectList objectList1;
 	private ObjectList objectList2;
@@ -30,7 +32,7 @@ public class LinearProblem {
 
 
 	public LinearProblem(String name, ObjectList objectList1, ObjectList objectList2, 
-			List<Constraint> constraints, int problemType, Integer[][] objectiveValues) {
+			List<Constraint> constraints, int problemType, Map<String, Double> objectiveValues) {
 		lp = GLPK.glp_create_prob();
 		GLPK.glp_set_prob_name(lp, name);
 		this.constraints = constraints;
@@ -53,8 +55,9 @@ public class LinearProblem {
 		int index2 = 0;
 		for (AssignmentObject o1 : objectList1) {
 			for (AssignmentObject o2 : objectList2) {
-				assignmentVarbs.add(new AssignmentVariable(identifier, o1.getName()+o2.getName(), 
-						new Bound(GLPKConstants.GLP_DB, 0, 1), objectiveValues[index1][index2]));
+				String key = o1.getName()+o2.getName();
+				assignmentVarbs.add(new AssignmentVariable(identifier, key, 
+						new Bound(GLPKConstants.GLP_DB, 0, 1), objectiveValues.get(key)));
 				identifier++;
 				index2++;
 			}
