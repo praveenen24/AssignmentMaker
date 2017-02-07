@@ -58,7 +58,9 @@ public class MainFrame extends JFrame {
 	public void setupTabs(Model m) {
 		ProblemSetupPanel panel = new ProblemSetupPanel(m);
 		m.addObserver(panel);
+		ConstraintPanel constraints = new ConstraintPanel(m);
 		tabs.add("Problem Setup", panel);
+		tabs.add("Constraints", constraints);
 	}
 	
 	public Model initialize() {
