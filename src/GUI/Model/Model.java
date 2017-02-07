@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 
 import Main.AssignmentObject;
 import Main.Constraint;
 import Main.ObjectList;
 
-public class Model {
+public class Model extends Observable {
 	
 	private ObjectList objectList1;
 	private ObjectList objectList2;
@@ -49,6 +50,12 @@ public class Model {
 	public ObjectList getObjectList1() {
 		return objectList1;
 	}
+	
+	public void setObjectList1(ObjectList objectList1) {
+		this.objectList1 = objectList1;
+		setChanged();
+		notifyObservers("List1");
+	}
 
 	public void setList2Name(String name) {
 		objectList2.setName(name);
@@ -68,6 +75,12 @@ public class Model {
 	
 	public ObjectList getObjectList2() {
 		return objectList2;
+	}
+	
+	public void setObjectList2(ObjectList objectList2) {
+		this.objectList2 = objectList2;
+		setChanged();
+		notifyObservers("List2");
 	}
 	
 	public List<Constraint> getConstraints() {
@@ -92,5 +105,9 @@ public class Model {
 	
 	public Map<String, Double> getObjectiveValues() {
 		return objectiveValues;
+	}
+	
+	public void setObjectiveValues(Map<String,Double> objectiveValues) {
+		this.objectiveValues = objectiveValues;
 	}
 }

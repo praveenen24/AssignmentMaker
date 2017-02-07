@@ -2,8 +2,8 @@ package GUI.View;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -21,12 +21,12 @@ import javax.swing.event.ListSelectionListener;
 
 import org.gnu.glpk.GLPKConstants;
 
-import Excel.SpreadSheetWriter;
 import GUI.Model.Model;
 import Main.AssignmentObject;
 import Main.LinearProblem;
+import Main.ObjectList;
 
-public class ProblemSetupPanel extends JPanel {
+public class ProblemSetupPanel extends JPanel implements Observer {
 
 	private JList<AssignmentObject> objectList1;
 	private JList<AssignmentObject> objectList2;
@@ -174,4 +174,20 @@ public class ProblemSetupPanel extends JPanel {
 		}
 		
 	};
+
+	@Override
+	public void update(Observable o, Object arg) {
+		Model model = (Model) o;
+		if (arg.equals("List1")) {
+			ObjectList list1 = model.getObjectList1();
+			for (AssignmentObject o1 : list1) {
+				model1.addElement(o1);
+			}
+		} else if (arg.equals("List2")) {
+			ObjectList list2 = model.getObjectList2();
+			for (AssignmentObject o2 : list2) {
+				model2.addElement(o2);
+			}
+		}
+	}
 }

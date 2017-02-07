@@ -2,8 +2,10 @@ package GUI.View;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -13,6 +15,7 @@ import javax.swing.JTabbedPane;
 
 import org.gnu.glpk.GLPKConstants;
 
+import Excel.SpreadSheetReader;
 import Excel.SpreadSheetWriter;
 import GUI.Model.Model;
 import Main.AssignmentObject;
@@ -29,7 +32,8 @@ public class MainFrame extends JFrame {
 		super("Assignment Maker");
 		tabs = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.SCROLL_TAB_LAYOUT);
 		setupMenuBar();
-		model = initialize();
+		//model = initialize();
+		model = new Model("List1", "List2");
 		setupTabs(model);
 		add(tabs);
 		setSize(600,400);
@@ -41,15 +45,20 @@ public class MainFrame extends JFrame {
 	private void setupMenuBar() {
 		JMenuBar bar = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
+		JMenuItem loadData = new JMenuItem("Load Data");
 		JMenuItem saveData = new JMenuItem("Save Data");
 		saveData.addActionListener(saveDataListener);
+		loadData.addActionListener(loadDataListener);
 		fileMenu.add(saveData);
+		fileMenu.add(loadData);
 		bar.add(fileMenu);
 		setJMenuBar(bar);
 	}
 	
 	public void setupTabs(Model m) {
-		tabs.add("Problem Setup", new ProblemSetupPanel(m));
+		ProblemSetupPanel panel = new ProblemSetupPanel(m);
+		m.addObserver(panel);
+		tabs.add("Problem Setup", panel);
 	}
 	
 	public Model initialize() {
@@ -125,6 +134,27 @@ public class MainFrame extends JFrame {
 			String fileName = JOptionPane.showInputDialog("Enter file name");
 			SpreadSheetWriter writer = new SpreadSheetWriter(fileName, model);
 			writer.saveData();
+		}
+	};
+	
+	private ActionListener loadDataListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JFileChooser chooser = new JFileChooser();
+			int option = chooser.showOpenDialog(null);
+			if (option == JFileChooser.APPROVE_OPTION) {
+				File file = chooser.getSelectedFile();
+				SpreadSheetReader reader = new SpreadSheetReader(file);
+				try {
+					reader.readData();
+					model.setObjectList1(reader.getList1());
+					model.setObjectList2(reader.getList2());
+					model.setObjectiveValues(reader.getObjectiveValues());
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+			
 		}
 	};
 	

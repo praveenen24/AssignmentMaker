@@ -43,7 +43,7 @@ public class LinearProblem {
 		this.objectiveValues = objectiveValues;
 		this.assignmentVarbs = new ArrayList<AssignmentVariable>();
 		columnSize = this.objectList1.size() * this.objectList2.size();
-		GLPK.glp_add_rows(lp, this.constraints.size());
+		if (constraints.size() > 0) GLPK.glp_add_rows(lp, this.constraints.size());
 		createVariables();
 		setupObjective();
 		addConstraints();
