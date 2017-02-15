@@ -31,7 +31,7 @@ public class SpreadSheetReader {
 		this.model = model;
 	}
 
-	public void loadData() throws Exception	{
+	public List<String> loadData() throws Exception	{
 		XSSFWorkbook workBook = new XSSFWorkbook(file);
 		XSSFSheet sheet = workBook.getSheetAt(0);
 		XSSFRow firstRow = sheet.getRow(0);
@@ -57,9 +57,15 @@ public class SpreadSheetReader {
 				if (!list2.contains(o2)) list2.add(o2);
 				double value = third.getNumericCellValue();
 				if (model.getScoreRestriction().getType().equals(ScoreType.POSITIVE)) {
-					if (value < 0) throw new Exception("All Values Must be Positive");
+					if (value < 0) {
+						value = 0;
+						errors.add(objectName1+objectName2);
+					}
 				} else if (model.getScoreRestriction().getType().equals(ScoreType.NEGATIVE)) {
-					if (value >= 0) throw new Exception("All Values Must be Negative");
+					if (value >= 0) {
+						value = 0;
+						errors.add(objectName1+objectName2);
+					}
 				}
 				objectiveValues.put(o1.getName()+o2.getName(), value);
 				set.add(value);
@@ -67,6 +73,7 @@ public class SpreadSheetReader {
 				throw new Exception("Error Loading File. Please Check the Data Format.");
 			}
 		}
+		return errors;
 	}
 	
 	public void readData() throws Exception {

@@ -166,10 +166,19 @@ public class MainFrame extends JFrame {
 				if (file.getName().toLowerCase().endsWith(".xlsx")) {
 					SpreadSheetReader reader = new SpreadSheetReader(file, model);
 					try {
-						reader.loadData();
+						List<String> errors = reader.loadData();
 						model.setObjectList1(reader.getList1());
 						model.setObjectList2(reader.getList2());
 						model.setObjectiveValues(reader.getObjectiveValues());
+						if (!errors.isEmpty()) {
+							JTextArea area = new JTextArea(8,25);
+							area.setEditable(false);
+							for (String s : errors) {
+								area.append(s + "\n");
+							}
+							JScrollPane scrollPane = new JScrollPane(area);
+							JOptionPane.showMessageDialog(null, scrollPane, "Restriction Violations that were Reset to 0", JOptionPane.WARNING_MESSAGE);
+						}
 					} catch (Exception e1) {
 						JOptionPane.showMessageDialog(null, e1.getMessage(), "Loading Error", JOptionPane.ERROR_MESSAGE);
 					}
