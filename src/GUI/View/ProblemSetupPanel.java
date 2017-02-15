@@ -1,8 +1,10 @@
 package GUI.View;
 
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -30,6 +32,7 @@ import Main.Constraint;
 import Main.HorizontalConstraint;
 import Main.LinearProblem;
 import Main.ObjectList;
+import Main.ScoreType;
 import Main.VerticalConstraint;
 
 public class ProblemSetupPanel extends JPanel implements Observer {
@@ -67,15 +70,11 @@ public class ProblemSetupPanel extends JPanel implements Observer {
 		score = new JTextField();
 		solution = new JTextArea("Click Solve to Generate Solution ... ");
 		scrollPane1 = new JScrollPane(objectList1);
-		springLayout.putConstraint(SpringLayout.SOUTH, scrollPane1, -35, SpringLayout.SOUTH, this);
 		scrollPane2 = new JScrollPane(objectList2);
 		scrollPane3 = new JScrollPane(solution);
-		
 		objectList1.addListSelectionListener(listListener);
 		objectList2.addListSelectionListener(listListener);
-		
 		listName1 = new JTextField(model.getList1Name());
-		springLayout.putConstraint(SpringLayout.NORTH, scrollPane1, 9, SpringLayout.SOUTH, listName1);
 		listName1.setBackground(null);
 		listName2 = new JTextField(model.getList2Name());
 		listName2.setBackground(null);
@@ -83,16 +82,9 @@ public class ProblemSetupPanel extends JPanel implements Observer {
 		run.addActionListener(solveListener);
 		scoreLabel = new JLabel("Score");
 		comboBox = new JComboBox(new String[]{"Minimize", "Maximize"});
-		
 		addList1Button = new JButton("+");
-		springLayout.putConstraint(SpringLayout.NORTH, addList1Button, 6, SpringLayout.SOUTH, scrollPane1);
-		springLayout.putConstraint(SpringLayout.WEST, addList1Button, 82, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.EAST, addList1Button, 0, SpringLayout.EAST, scrollPane1);
 		addList2Button = new JButton("+");
 		removeList1Button = new JButton("-");
-		springLayout.putConstraint(SpringLayout.NORTH, removeList1Button, 0, SpringLayout.NORTH, run);
-		springLayout.putConstraint(SpringLayout.WEST, removeList1Button, 42, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.EAST, removeList1Button, -6, SpringLayout.WEST, addList1Button);
 		removeList2Button = new JButton("-");
 		saveButton = new JButton("Save");
 		add(listName2); add(listName1);
@@ -112,6 +104,14 @@ public class ProblemSetupPanel extends JPanel implements Observer {
 	}
 
 	public void setupConstraints(SpringLayout springLayout) {
+		springLayout.putConstraint(SpringLayout.NORTH, scrollPane1, 9, SpringLayout.SOUTH, listName1);
+		springLayout.putConstraint(SpringLayout.NORTH, removeList1Button, 0, SpringLayout.NORTH, run);
+		springLayout.putConstraint(SpringLayout.WEST, removeList1Button, 42, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.EAST, removeList1Button, -6, SpringLayout.WEST, addList1Button);
+		springLayout.putConstraint(SpringLayout.NORTH, addList1Button, 6, SpringLayout.SOUTH, scrollPane1);
+		springLayout.putConstraint(SpringLayout.WEST, addList1Button, 82, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.EAST, addList1Button, 0, SpringLayout.EAST, scrollPane1);
+		springLayout.putConstraint(SpringLayout.SOUTH, scrollPane1, -35, SpringLayout.SOUTH, this);
 		springLayout.putConstraint(SpringLayout.NORTH, saveButton, 42, SpringLayout.NORTH, this);
 		springLayout.putConstraint(SpringLayout.WEST, addList2Button, -40, SpringLayout.WEST, comboBox);
 		springLayout.putConstraint(SpringLayout.SOUTH, addList2Button, 0, SpringLayout.SOUTH, run);
@@ -154,10 +154,39 @@ public class ProblemSetupPanel extends JPanel implements Observer {
 			model2.addElement(a);
 		} 
 	}
+	
+	public List<String> validateData() {
+		List<String> errors = new ArrayList<String>();
+		for (AssignmentObject o1 : model.getObjectList1()) {
+			HashSet<Double> set = new HashSet<Double>();
+			for (AssignmentObject o2 : model.getObjectList2()) {
+				Double value = model.getObjectiveValues().get(o1.getName()+o2.getName());
+				if (Math.floor(value) != value || value < 1 || value > model.getObjectList2().size() || !set.add(value)) {
+					errors.add(o1.getName()+o2.getName());
+					model.getObjectiveValues().put(o1.getName()+o2.getName(), 0.0);
+				}
+			}
+		}
+		return errors;
+	}
 
 	public ActionListener solveListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			if (model.getScoreRestriction().isContinuous()) {
+				List<String> errors = validateData();
+				if (!errors.isEmpty()) {
+					JTextArea area = new JTextArea();
+					area.setEditable(false);
+					for (String s : errors) {
+						area.append(s + "\n");
+					}
+					JPanel panel = new JPanel(new GridLayout(2,1));
+					panel.add(new JLabel("The Following Combinations did not Meet the Score Restrictions and Have Been Set to 0"));
+					panel.add(new JScrollPane(area));
+					JOptionPane.showMessageDialog(null, panel, "Score Warning", JOptionPane.WARNING_MESSAGE);
+				}
+			}
 			ArrayList<Constraint> constraints = new ArrayList<Constraint>();
 			for (Constraint c : model.getConstraints()) {
 				if (c instanceof HorizontalConstraint) {
@@ -203,12 +232,21 @@ public class ProblemSetupPanel extends JPanel implements Observer {
 	public ActionListener saveListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			int s;
 			double d;
 			try {
-				s = Integer.parseInt(score.getText());
 				d = Double.parseDouble(score.getText());
 				String key = objectList1.getSelectedValue().getName() + objectList2.getSelectedValue().getName();
+				if (model.getScoreRestriction().getType().equals(ScoreType.POSITIVE)) {
+					if (d < 0) {
+						JOptionPane.showMessageDialog(null, "Scores must be positive", "Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+				} else if (model.getScoreRestriction().getType().equals(ScoreType.NEGATIVE)) {
+					if (d >= 0) {
+						JOptionPane.showMessageDialog(null, "Scores must be negative", "Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+				}
 				model.putObjectiveValue(key, d);
 			} catch (Exception ex) {
 				score.setText("Invalid Entry");
@@ -221,9 +259,11 @@ public class ProblemSetupPanel extends JPanel implements Observer {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String name = JOptionPane.showInputDialog("Enter name of new object");
-			AssignmentObject object = new AssignmentObject(name);
-			model.addToList1(object);
-			model1.addElement(object);
+			if (name != null) {
+				AssignmentObject object = new AssignmentObject(name);
+				model.addToList1(object);
+				model1.addElement(object);
+			}
 		}
 	};
 	
@@ -231,9 +271,11 @@ public class ProblemSetupPanel extends JPanel implements Observer {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String name = JOptionPane.showInputDialog("Enter name of new object");
-			AssignmentObject object = new AssignmentObject(name);
-			model.addToList2(object);
-			model2.addElement(object);
+			if (name != null) {
+				AssignmentObject object = new AssignmentObject(name);
+				model.addToList2(object);
+				model2.addElement(object);
+			}
 		}
 	};
 	
@@ -310,11 +352,13 @@ public class ProblemSetupPanel extends JPanel implements Observer {
 		Model model = (Model) o;
 		if (arg.equals("List1")) {
 			ObjectList list1 = model.getObjectList1();
+			model1.clear();
 			for (AssignmentObject o1 : list1) {
 				model1.addElement(o1);
 			}
 		} else if (arg.equals("List2")) {
 			ObjectList list2 = model.getObjectList2();
+			model2.clear();
 			for (AssignmentObject o2 : list2) {
 				model2.addElement(o2);
 			}

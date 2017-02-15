@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -19,6 +21,8 @@ import GUI.Model.Model;
 import Main.Bound;
 import Main.Constraint;
 import Main.HorizontalConstraint;
+import Main.ScoreRestriction;
+import Main.ScoreType;
 import Main.VerticalConstraint;
 
 public class ConstraintPanel extends JPanel {
@@ -29,6 +33,10 @@ public class ConstraintPanel extends JPanel {
 	private JLabel constraintLabel;
 	private JButton addButton;
 	private JButton removeButton;
+	private JLabel scoreLabel;
+	private JLabel typeLabel;
+	private JComboBox<ScoreType> scoreType;
+	private JCheckBox continuous;
 	
 	public ConstraintPanel(Model model) {
 		this.model = model;
@@ -37,28 +45,45 @@ public class ConstraintPanel extends JPanel {
 		model1 = new DefaultListModel<Constraint>(); 
 		constraintList = new JList<>(model1);
 		scrollPane1 = new JScrollPane(constraintList);
+		scoreLabel = new JLabel("Score Restriction");
+		typeLabel = new JLabel("Score Type");
+		scoreType = new JComboBox<ScoreType>(ScoreType.values());
+		continuous = new JCheckBox("Scores based on rankings?");
+		scoreType.addActionListener(scoreListener);
+		continuous.addActionListener(scoreListener);
 		constraintLabel = new JLabel("Restrictions");
-		addButton = new JButton("Add");
-		removeButton = new JButton("Remove");
+		addButton = new JButton("+");
+		removeButton = new JButton("-");
 		addButton.addActionListener(addListener);
-		add(scrollPane1);
-		add(constraintLabel);
-		add(addButton);
+		add(scrollPane1); add(constraintLabel);
+		add(addButton); 
 		add(removeButton);
+		add(scoreLabel); add(typeLabel);
+		add(continuous); add(scoreType);
 		setUILayout(springLayout);
 	}
 	
 	public void setUILayout(SpringLayout springLayout) {
-		springLayout.putConstraint(SpringLayout.NORTH, addButton, 23, SpringLayout.NORTH, this);
+		springLayout.putConstraint(SpringLayout.EAST, scrollPane1, 354, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.WEST, scoreLabel, 10, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.NORTH, addButton, 35, SpringLayout.NORTH, this);
+		springLayout.putConstraint(SpringLayout.WEST, addButton, 6, SpringLayout.EAST, scrollPane1);
+		springLayout.putConstraint(SpringLayout.EAST, addButton, 37, SpringLayout.EAST, scrollPane1);
+		springLayout.putConstraint(SpringLayout.NORTH, removeButton, 6, SpringLayout.SOUTH, addButton);
+		springLayout.putConstraint(SpringLayout.WEST, removeButton, 6, SpringLayout.EAST, scrollPane1);
+		springLayout.putConstraint(SpringLayout.EAST, removeButton, 0, SpringLayout.EAST, addButton);
 		springLayout.putConstraint(SpringLayout.NORTH, constraintLabel, 4, SpringLayout.NORTH, this);
 		springLayout.putConstraint(SpringLayout.WEST, constraintLabel, 10, SpringLayout.WEST, this);
 		springLayout.putConstraint(SpringLayout.NORTH, scrollPane1, 26, SpringLayout.NORTH, this);
 		springLayout.putConstraint(SpringLayout.WEST, scrollPane1, 10, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.NORTH, removeButton, 9, SpringLayout.SOUTH, addButton);
-		springLayout.putConstraint(SpringLayout.WEST, addButton, 0, SpringLayout.WEST, removeButton);
-		springLayout.putConstraint(SpringLayout.EAST, removeButton, -10, SpringLayout.EAST, this);
-		springLayout.putConstraint(SpringLayout.SOUTH, scrollPane1, 268, SpringLayout.NORTH, this);
-		springLayout.putConstraint(SpringLayout.EAST, scrollPane1, 344, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.SOUTH, scrollPane1, 165, SpringLayout.NORTH, this);
+		springLayout.putConstraint(SpringLayout.EAST, typeLabel, 0, SpringLayout.EAST, constraintLabel);
+		springLayout.putConstraint(SpringLayout.SOUTH, scoreLabel, -6, SpringLayout.NORTH, continuous);
+		springLayout.putConstraint(SpringLayout.WEST, continuous, 10, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.SOUTH, continuous, -6, SpringLayout.NORTH, scoreType);
+		springLayout.putConstraint(SpringLayout.NORTH, typeLabel, 4, SpringLayout.NORTH, scoreType);
+		springLayout.putConstraint(SpringLayout.WEST, scoreType, 97, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.SOUTH, scoreType, -24, SpringLayout.SOUTH, this);
 	}
 	
 	public Model getModel() {
@@ -68,6 +93,17 @@ public class ConstraintPanel extends JPanel {
 	public void setModel(Model model) {
 		this.model = model;
 	}
+	
+	private ActionListener scoreListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			ScoreType type = (ScoreType) scoreType.getSelectedItem();
+			if (type != null) {
+				ScoreRestriction restriction = new ScoreRestriction((ScoreType) scoreType.getSelectedItem(), continuous.isSelected());
+				model.setScoreRestriction(restriction);
+			}
+		}
+	};
 	
 	private ActionListener addListener = new ActionListener() {
 		@Override

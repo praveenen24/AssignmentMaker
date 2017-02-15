@@ -9,6 +9,8 @@ import java.util.Observable;
 import Main.AssignmentObject;
 import Main.Constraint;
 import Main.ObjectList;
+import Main.ScoreRestriction;
+import Main.ScoreType;
 
 public class Model extends Observable {
 	
@@ -16,18 +18,21 @@ public class Model extends Observable {
 	private ObjectList objectList2;
 	private List<Constraint> constraints;
 	private Map<String, Double> objectiveValues;
+	private ScoreRestriction scoreRestriction;
 
 	public Model(String listName1, String listName2) {
 		objectList1 = new ObjectList(listName1);
 		objectList2 = new ObjectList(listName2);
 		constraints = new ArrayList<Constraint>();
 		objectiveValues = new HashMap<String, Double>();
+		scoreRestriction = new ScoreRestriction(ScoreType.BOTH, false);
 	}
 	
 	public Model(ObjectList objectList1, ObjectList objectList2, List<Constraint> constraints) {
 		this.objectList1 = objectList1;
 		this.objectList2 = objectList2;
 		this.constraints = constraints;
+		scoreRestriction = new ScoreRestriction(ScoreType.BOTH, false);
 		objectiveValues = new HashMap<String, Double>();
 	}
 	
@@ -37,6 +42,14 @@ public class Model extends Observable {
 	
 	public String getList1Name() {
 		return objectList1.getName();
+	}
+	
+	public ScoreRestriction getScoreRestriction() {
+		return scoreRestriction;
+	}
+	
+	public void setScoreRestriction(ScoreRestriction scoreRestriction) {
+		this.scoreRestriction = scoreRestriction;
 	}
 	
 	public void addToList1(AssignmentObject object) {
