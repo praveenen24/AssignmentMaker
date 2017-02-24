@@ -1,5 +1,6 @@
 package GUI.View;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -111,31 +113,41 @@ public class ConstraintPanel extends JPanel {
 			ArrayList<Constraint> constraints = new ArrayList<Constraint>();
 			int choice = JOptionPane.showOptionDialog(null, "What kind of Restriction?", "Restriction Type", JOptionPane.YES_NO_CANCEL_OPTION, 
 					JOptionPane.QUESTION_MESSAGE, null, new String[]{"Horizontal Bound","Vertical Constraint","Custom"}, null);
-			if (choice == 2) System.out.println("Custom");
+			if (choice == 2) {
+				System.out.println("Custom");
+				System.out.println("Custom Constraint");
+				CustomConstraintPanel panel = new CustomConstraintPanel(model);
+				panel.setMinimumSize(new Dimension(500,325));
+				panel.setPreferredSize(new Dimension(500,325));
+				JFrame tempFrame = new JFrame("Create Custom Restriction");
+				JOptionPane.showMessageDialog(tempFrame, panel, "Create Custom Restriction", JOptionPane.INFORMATION_MESSAGE);
+			}
 			if (choice == 1 || choice == 0) {
-				String name = JOptionPane.showInputDialog("Constraint Name?");
+				
 				int min = Integer.parseInt(JOptionPane.showInputDialog("Minimum Number?"));
 				int max = Integer.parseInt(JOptionPane.showInputDialog("Maximum Number?"));
 				if (choice == 1) {
 					Constraint c;
 					if (min == max) {
-						c = new VerticalConstraint(name, new Bound(GLPKConstants.GLP_FX, min, max));
+						c = new VerticalConstraint("Vertical", new Bound(GLPKConstants.GLP_FX, min, max));
 						model.addConstraint(c);
 					} else {
-						c = new VerticalConstraint(name, new Bound(GLPKConstants.GLP_DB, min, max));
+						c = new VerticalConstraint("Vertical", new Bound(GLPKConstants.GLP_DB, min, max));
 						model.addConstraint(c);
 					}
 					model1.addElement(c);
 				} else if (choice == 0) {
 					Constraint c;
 					if (min == max) {
-						c = new HorizontalConstraint(name, new Bound(GLPKConstants.GLP_FX, min, max));
+						c = new HorizontalConstraint("Horizontal", new Bound(GLPKConstants.GLP_FX, min, max));
 						model.addConstraint(c);
 					} else {
-						c = new HorizontalConstraint(name, new Bound(GLPKConstants.GLP_DB, min, max));
+						c = new HorizontalConstraint("Horizontal", new Bound(GLPKConstants.GLP_DB, min, max));
 						model.addConstraint(c);
 					}
 					model1.addElement(c);
+				} else {
+					
 				}
 			}
 		}

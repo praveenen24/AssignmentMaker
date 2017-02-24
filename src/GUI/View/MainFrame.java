@@ -16,6 +16,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -71,6 +72,7 @@ public class MainFrame extends JFrame {
 		ConstraintPanel constraints = new ConstraintPanel(m);
 		tabs.add("Problem Setup", panel);
 		tabs.add("Restrictions", constraints);
+		tabs.add("Testing", new CustomConstraintPanel(m));
 	}
 	
 	public Model initialize() {

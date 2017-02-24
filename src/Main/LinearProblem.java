@@ -33,8 +33,8 @@ public class LinearProblem {
 
 	public LinearProblem(String name, ObjectList objectList1, ObjectList objectList2, 
 			List<Constraint> constraints, int problemType, Map<String, Double> objectiveValues) {
-		lp = GLPK.glp_create_prob();
-		GLPK.glp_set_prob_name(lp, name);
+		setLp(GLPK.glp_create_prob());
+		GLPK.glp_set_prob_name(getLp(), name);
 		this.constraints = constraints;
 		this.name = name;
 		this.objectList1 = objectList1;
@@ -43,7 +43,7 @@ public class LinearProblem {
 		this.objectiveValues = objectiveValues;
 		this.assignmentVarbs = new ArrayList<AssignmentVariable>();
 		columnSize = this.objectList1.size() * this.objectList2.size();
-		if (constraints.size() > 0) GLPK.glp_add_rows(lp, this.constraints.size());
+		if (constraints.size() > 0) GLPK.glp_add_rows(getLp(), this.constraints.size());
 		createVariables();
 		setupObjective();
 		addConstraints();
@@ -68,22 +68,22 @@ public class LinearProblem {
 	}
 	
 	public void addVariables() {
-		GLPK.glp_add_cols(lp, columnSize);
+		GLPK.glp_add_cols(getLp(), columnSize);
 		int index = 1;
 		for (AssignmentVariable varb : assignmentVarbs) {
 			Bound b = varb.getBound();
-			GLPK.glp_set_col_name(lp, index, varb.getName());
-			GLPK.glp_set_col_kind(lp, index, GLPKConstants.GLP_CV);
-			GLPK.glp_set_col_bnds(lp, index, b.getBoundType(), b.getLowerBound(), b.getUpperBound());
+			GLPK.glp_set_col_name(getLp(), index, varb.getName());
+			GLPK.glp_set_col_kind(getLp(), index, GLPKConstants.GLP_CV);
+			GLPK.glp_set_col_bnds(getLp(), index, b.getBoundType(), b.getLowerBound(), b.getUpperBound());
 			index++;
 		}
 	}
 	
 	public void setupObjective() {
-		GLPK.glp_set_obj_name (lp , "Z");
-		GLPK.glp_set_obj_dir (lp , problemType);
+		GLPK.glp_set_obj_name (getLp() , "Z");
+		GLPK.glp_set_obj_dir (getLp() , problemType);
 		for (AssignmentVariable varb : assignmentVarbs) {
-			GLPK.glp_set_obj_coef(lp, varb.getID(), varb.getObjectiveCoeff());
+			GLPK.glp_set_obj_coef(getLp(), varb.getID(), varb.getObjectiveCoeff());
 		}
 	}
 
@@ -92,8 +92,8 @@ public class LinearProblem {
 			Constraint c = constraints.get(i);
 			Bound b = c.getBounds();
 			Set<Entry<Integer, Double>> entries = c.getValues().entrySet();
-			GLPK.glp_set_row_name (lp , i+1, "c"+i+1);
-			GLPK.glp_set_row_bnds(lp, i+1, b.getBoundType(), b.getLowerBound(), b.getUpperBound());
+			GLPK.glp_set_row_name (getLp() , i+1, "c"+i+1);
+			GLPK.glp_set_row_bnds(getLp(), i+1, b.getBoundType(), b.getLowerBound(), b.getUpperBound());
 			ind = GLPK.new_intArray(entries.size());
 			val = GLPK.new_doubleArray(entries.size());
 			int index = 1;
@@ -102,7 +102,7 @@ public class LinearProblem {
 				GLPK.doubleArray_setitem(val, index, e.getValue());
 				index++;
 			}
-			GLPK.glp_set_mat_row(lp, i+1, entries.size(), ind, val);
+			GLPK.glp_set_mat_row(getLp(), i+1, entries.size(), ind, val);
 		}
 	}
 
@@ -115,34 +115,34 @@ public class LinearProblem {
 		// Solve model
         parm = new glp_smcp();
         GLPK.glp_init_smcp(parm);
-        ret = GLPK.glp_simplex(lp, parm);
+        setRet(GLPK.glp_simplex(getLp(), parm));
 
         // Retrieve solution
-        if (ret == 0) {
-            DisplayLP.displayAllValues(lp);
+        if (getRet() == 0) {
+            DisplayLP.displayAllValues(getLp());
         } else {
             System.out.println("The problem could not be solved");
         }
 
         // Free memory
-        GLPK.glp_delete_prob(lp);
+        GLPK.glp_delete_prob(getLp());
 	}
 	
 	public String getStringSolution() {
 		// Solve model
         parm = new glp_smcp();
         GLPK.glp_init_smcp(parm);
-        ret = GLPK.glp_simplex(lp, parm);
+        setRet(GLPK.glp_simplex(getLp(), parm));
         String output = "";
         // Retrieve solution
-        if (ret == 0) {
-            output = DisplayLP.getOutput(lp);
+        if (getRet() == 0) {
+            output = DisplayLP.getOutput(getLp());
         } else {
         	output = "The problem could not be solved";
         }
 
         // Free memory
-        GLPK.glp_delete_prob(lp);
+        GLPK.glp_delete_prob(getLp());
         return output;
 	}
 	
@@ -180,6 +180,22 @@ public class LinearProblem {
 		
 		//LinearProblem lp = new LinearProblem("lp", tas, courses, constraints, GLPKConstants.GLP_MIN, objectiveVal);
 		//lp.solve();
+	}
+
+	public glp_prob getLp() {
+		return lp;
+	}
+
+	public void setLp(glp_prob lp) {
+		this.lp = lp;
+	}
+
+	public int getRet() {
+		return ret;
+	}
+
+	public void setRet(int ret) {
+		this.ret = ret;
 	}
 
 }

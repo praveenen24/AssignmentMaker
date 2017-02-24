@@ -7,7 +7,7 @@ import org.gnu.glpk.SWIGTYPE_p_int;
 import org.gnu.glpk.glp_prob;
 import org.gnu.glpk.glp_smcp;
 
-public class example {
+public class LinearProgExample {
 	// Maximize z = 10*x1 + 6*x2 + 4*x3
 	//
 	// subject to
