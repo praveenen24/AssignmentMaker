@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -22,6 +23,10 @@ import org.gnu.glpk.GLPKConstants;
 import GUI.Model.Model;
 import Main.Bound;
 import Main.Constraint;
+import Main.ConstraintBoundType;
+import Main.CustomConstraint;
+import Main.CustomConstraintBound;
+import Main.CustomConstraintVariable;
 import Main.HorizontalConstraint;
 import Main.ScoreRestriction;
 import Main.ScoreType;
@@ -114,13 +119,31 @@ public class ConstraintPanel extends JPanel {
 			int choice = JOptionPane.showOptionDialog(null, "What kind of Restriction?", "Restriction Type", JOptionPane.YES_NO_CANCEL_OPTION, 
 					JOptionPane.QUESTION_MESSAGE, null, new String[]{"Horizontal Bound","Vertical Constraint","Custom"}, null);
 			if (choice == 2) {
-				System.out.println("Custom");
-				System.out.println("Custom Constraint");
-				CustomConstraintPanel panel = new CustomConstraintPanel(model);
-				panel.setMinimumSize(new Dimension(500,325));
-				panel.setPreferredSize(new Dimension(500,325));
-				JFrame tempFrame = new JFrame("Create Custom Restriction");
-				JOptionPane.showMessageDialog(tempFrame, panel, "Create Custom Restriction", JOptionPane.INFORMATION_MESSAGE);
+				if (!model.getObjectList1().isEmpty() && !model.getObjectList2().isEmpty()) {
+					CustomConstraintPanel panel = new CustomConstraintPanel(model);
+					panel.setMinimumSize(new Dimension(500,325));
+					panel.setPreferredSize(new Dimension(500,325));
+					JFrame tempFrame = new JFrame("Create Custom Restriction");
+					int result = JOptionPane.showOptionDialog(tempFrame, panel, "Create Custom Restriction", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+					if (result == 0) {
+						String constraintName = panel.getConstraintName();
+						List<CustomConstraintVariable> varbs = panel.getVariables();
+						int bound;
+						if (panel.getBoundType().equals(ConstraintBoundType.LESS_THAN)) {
+							bound = GLPKConstants.GLP_UP;
+						} else {
+							bound = GLPKConstants.GLP_LO;
+						}
+						Double limit = panel.getLimit();
+						CustomConstraint c = new CustomConstraint(constraintName, new CustomConstraintBound(bound, limit), varbs);
+						model.addConstraint(c);
+						model1.addElement(c);
+					}
+					tempFrame.dispose();
+				} else {
+					JOptionPane.showMessageDialog(null, "There must be objects in both lists", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 			}
 			if (choice == 1 || choice == 0) {
 				

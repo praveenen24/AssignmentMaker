@@ -29,8 +29,10 @@ import GUI.Model.Model;
 import Main.AssignmentObject;
 import Main.Bound;
 import Main.Constraint;
+import Main.CustomConstraint;
 import Main.HorizontalConstraint;
 import Main.LinearProblem;
+import Main.MixedIntegerProblem;
 import Main.ObjectList;
 import Main.ScoreType;
 import Main.VerticalConstraint;
@@ -199,18 +201,42 @@ public class ProblemSetupPanel extends JPanel implements Observer {
 					constraints.add(c);
 				}
 			}
-			LinearProblem lp;
-			if (comboBox.getSelectedItem().toString().equals("Minimize")) {
-				lp = new LinearProblem("LP", model.getObjectList1(), model.getObjectList2(), constraints, GLPKConstants.GLP_MIN, model.getObjectiveValues());
-			} else if (comboBox.getSelectedItem().toString().equals("Maximize")) {
-				lp = new LinearProblem("LP", model.getObjectList1(), model.getObjectList2(), model.getConstraints(), GLPKConstants.GLP_MAX, model.getObjectiveValues());
+			boolean linear = isLinearProblem(model.getConstraints());
+			
+			if (isLinearProblem(model.getConstraints())) {
+				LinearProblem lp;
+				if (comboBox.getSelectedItem().toString().equals("Minimize")) {
+					lp = new LinearProblem("LP", model.getObjectList1(), model.getObjectList2(), constraints, GLPKConstants.GLP_MIN, model.getObjectiveValues());
+				} else if (comboBox.getSelectedItem().toString().equals("Maximize")) {
+					lp = new LinearProblem("LP", model.getObjectList1(), model.getObjectList2(), constraints, GLPKConstants.GLP_MAX, model.getObjectiveValues());
+				} else {
+					JOptionPane.showMessageDialog(null, "No Solution Found", "ERROR", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				solution.setText(lp.getStringSolution());
 			} else {
-				JOptionPane.showMessageDialog(null, "No Solution Found", "ERROR", JOptionPane.ERROR_MESSAGE);
-				return;
+				MixedIntegerProblem mip;
+				if (comboBox.getSelectedItem().toString().equals("Minimize")) {
+					mip = new MixedIntegerProblem("LP", model.getObjectList1(), model.getObjectList2(), constraints, GLPKConstants.GLP_MIN, model.getObjectiveValues());
+				} else if (comboBox.getSelectedItem().toString().equals("Maximize")) {
+					mip = new MixedIntegerProblem("LP", model.getObjectList1(), model.getObjectList2(), constraints, GLPKConstants.GLP_MAX, model.getObjectiveValues());
+				} else {
+					JOptionPane.showMessageDialog(null, "No Solution Found", "ERROR", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				solution.setText(mip.getStringSolution());
 			}
-			solution.setText(lp.getStringSolution());
 		}
 	};
+	
+	private boolean isLinearProblem(List<Constraint> list) {
+		for (Constraint c : list) {
+			if (c instanceof CustomConstraint) {
+				return false;
+			}
+		}
+		return true;
+	}
 	
 	private ListSelectionListener listListener = new ListSelectionListener() {
 		@Override

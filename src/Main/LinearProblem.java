@@ -16,19 +16,20 @@ import org.gnu.glpk.glp_prob;
 import org.gnu.glpk.glp_smcp;
 
 public class LinearProblem {
-	private glp_prob lp;
-	private glp_smcp parm;
-	private SWIGTYPE_p_int ind;
-	private SWIGTYPE_p_double val;
-	private int ret;
-	private String name;
-	private List<Constraint> constraints;
-	private Map<String, Double> objectiveValues;
-	private List<AssignmentVariable> assignmentVarbs;
-	private ObjectList objectList1;
-	private ObjectList objectList2;
-	private int problemType;
-	private int columnSize;
+	protected glp_prob lp;
+	protected glp_smcp parm;
+	protected SWIGTYPE_p_int ind;
+	protected SWIGTYPE_p_double val;
+	protected int ret;
+	protected String name;
+	protected List<Constraint> constraints;
+	protected Map<String, Double> objectiveValues;
+	protected Map<String, Integer> indexes;
+	protected List<AssignmentVariable> assignmentVarbs;
+	protected ObjectList objectList1;
+	protected ObjectList objectList2;
+	protected int problemType;
+	protected int columnSize;
 
 
 	public LinearProblem(String name, ObjectList objectList1, ObjectList objectList2, 
@@ -41,6 +42,7 @@ public class LinearProblem {
 		this.objectList2 = objectList2;
 		this.problemType = problemType;
 		this.objectiveValues = objectiveValues;
+		indexes = new HashMap<String, Integer>();
 		this.assignmentVarbs = new ArrayList<AssignmentVariable>();
 		columnSize = this.objectList1.size() * this.objectList2.size();
 		if (constraints.size() > 0) GLPK.glp_add_rows(getLp(), this.constraints.size());
@@ -73,6 +75,7 @@ public class LinearProblem {
 		for (AssignmentVariable varb : assignmentVarbs) {
 			Bound b = varb.getBound();
 			GLPK.glp_set_col_name(getLp(), index, varb.getName());
+			indexes.put(varb.getName(), index);
 			GLPK.glp_set_col_kind(getLp(), index, GLPKConstants.GLP_CV);
 			GLPK.glp_set_col_bnds(getLp(), index, b.getBoundType(), b.getLowerBound(), b.getUpperBound());
 			index++;

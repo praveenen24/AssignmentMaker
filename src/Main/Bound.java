@@ -5,10 +5,10 @@ public class Bound {
 	private int lowerBound;
 	private int upperBound;
 	
-	public Bound(int boundType, int lowerBound, int upperBound) {
+	public Bound(int boundType, int lowerBound, int limit) {
 		this.boundType = boundType;
 		this.lowerBound = lowerBound;
-		this.upperBound = upperBound;
+		this.upperBound = limit;
 	}
 	
 	public int getLowerBound() {
