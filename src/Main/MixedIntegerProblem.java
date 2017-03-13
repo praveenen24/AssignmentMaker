@@ -9,6 +9,8 @@ import org.gnu.glpk.GLPK;
 import org.gnu.glpk.GLPKConstants;
 import org.gnu.glpk.glp_iocp;
 
+import ExampleProblems.MixedProblemExample;
+
 public class MixedIntegerProblem extends LinearProblem {
 
 	private glp_iocp iocp;
@@ -25,8 +27,8 @@ public class MixedIntegerProblem extends LinearProblem {
 			if (c instanceof CustomConstraint) {
 				CustomConstraint cus = (CustomConstraint) c;
 				CustomConstraintBound b = cus.getCustomBounds();
-				GLPK.glp_set_row_name (getLp() , i+1, "c"+i+1);
-				GLPK.glp_set_row_bnds(getLp(), i+1, b.getBoundType(), 0, b.getLimit());
+				GLPK.glp_set_row_name (lp , i+1, "c"+i+1);
+				GLPK.glp_set_row_bnds(lp, i+1, b.getBoundType(), 0, b.getLimit());
 				ind = GLPK.new_intArray(cus.getVariable().size());
 				val = GLPK.new_doubleArray(cus.getVariable().size());
 				int index = 1;
@@ -35,12 +37,12 @@ public class MixedIntegerProblem extends LinearProblem {
 					GLPK.doubleArray_setitem(val, index, varb.getMultiplier());
 					index++;
 				}
-				GLPK.glp_set_mat_row(getLp(), i+1, cus.getVariable().size(), ind, val);
+				GLPK.glp_set_mat_row(lp, i+1, cus.getVariable().size(), ind, val);
 			} else {
 				Bound b = c.getBounds();
 				Set<Entry<Integer, Double>> entries = c.getValues().entrySet();
-				GLPK.glp_set_row_name (getLp() , i+1, "c"+i+1);
-				GLPK.glp_set_row_bnds(getLp(), i+1, b.getBoundType(), b.getLowerBound(), b.getUpperBound());
+				GLPK.glp_set_row_name (lp , i+1, "c"+i+1);
+				GLPK.glp_set_row_bnds(lp, i+1, b.getBoundType(), b.getLowerBound(), b.getUpperBound());
 				ind = GLPK.new_intArray(entries.size());
 				val = GLPK.new_doubleArray(entries.size());
 				int index = 1;
@@ -49,27 +51,28 @@ public class MixedIntegerProblem extends LinearProblem {
 					GLPK.doubleArray_setitem(val, index, e.getValue());
 					index++;
 				}
-				GLPK.glp_set_mat_row(getLp(), i+1, entries.size(), ind, val);
+				GLPK.glp_set_mat_row(lp, i+1, entries.size(), ind, val);
 			}
 		}
 	}
 
 	@Override
-	public void solve() {
+	public String getStringSolution() {
 		iocp = new glp_iocp();
 		GLPK.glp_init_iocp(iocp);
 		iocp.setPresolve(GLPKConstants.GLP_ON);
-		setRet(GLPK.glp_intopt(getLp(), iocp));
-
+		ret = GLPK.glp_intopt(lp, iocp);
+		String output;
 		// Retrieve solution
-		if (getRet() == 0) {
-			DisplayLP.displayAllValues(getLp());
-		} else {
-			System.out.println("The problem could not be solved");
-		}
+		if (ret == 0) {
+            output = DisplayLP.getMipSolution(lp);
+        } else {
+        	output = "The problem could not be solved";
+        }
 
-		// Free memory
-		GLPK.glp_delete_prob(getLp());
+        // Free memory
+        GLPK.glp_delete_prob(lp);
+        return output;
 	}
 
 

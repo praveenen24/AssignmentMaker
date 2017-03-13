@@ -38,10 +38,13 @@ public class MainFrame extends JFrame {
 	
 	public MainFrame() {
 		super("Assignment Maker");
+		String list1Name = JOptionPane.showInputDialog(this, "Name of Object List 1 (Defaulted to List1)", "List 1 Name", JOptionPane.QUESTION_MESSAGE);
+		String list2Name = JOptionPane.showInputDialog(this, "Name of Object List 2 (Defaulted to List2)", "List 2 Name", JOptionPane.QUESTION_MESSAGE);
 		tabs = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.SCROLL_TAB_LAYOUT);
 		setupMenuBar();
-		//model = initialize();
-		model = new Model("List1", "List2");
+		if (list1Name == null || list1Name.trim().equals("")) list1Name = "List1";
+		if (list2Name == null || list2Name.trim().equals("")) list2Name = "List2";
+		model = new Model(list1Name, list2Name);
 		setupTabs(model);
 		add(tabs);
 		setSize(600,400);
@@ -72,7 +75,6 @@ public class MainFrame extends JFrame {
 		ConstraintPanel constraints = new ConstraintPanel(m);
 		tabs.add("Problem Setup", panel);
 		tabs.add("Restrictions", constraints);
-		tabs.add("Testing", new CustomConstraintPanel(m));
 	}
 	
 	public Model initialize() {

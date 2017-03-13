@@ -116,13 +116,19 @@ public class CustomConstraintPanel extends JPanel {
 	}
 	
 	private void buildUI() {
+		springLayout.putConstraint(SpringLayout.WEST, scrollPane3, 10, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.EAST, scrollPane3, -8, SpringLayout.WEST, typeBox);
+		springLayout.putConstraint(SpringLayout.WEST, multiplierField, 1, SpringLayout.EAST, multiplierLabel);
+		springLayout.putConstraint(SpringLayout.EAST, multiplierField, -6, SpringLayout.EAST, this);
+		springLayout.putConstraint(SpringLayout.NORTH, valueField, 34, SpringLayout.SOUTH, nameField);
+		springLayout.putConstraint(SpringLayout.WEST, valueField, 389, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.EAST, valueField, -6, SpringLayout.EAST, this);
+		springLayout.putConstraint(SpringLayout.EAST, typeBox, -6, SpringLayout.WEST, valueField);
 		springLayout.putConstraint(SpringLayout.NORTH, removeTermButton, 6, SpringLayout.SOUTH, addTermButton);
 		springLayout.putConstraint(SpringLayout.WEST, removeTermButton, 0, SpringLayout.WEST, addTermButton);
 		springLayout.putConstraint(SpringLayout.NORTH, addTermButton, 16, SpringLayout.SOUTH, multiplierField);
 		springLayout.putConstraint(SpringLayout.WEST, addTermButton, 6, SpringLayout.EAST, scrollPane2);
 		springLayout.putConstraint(SpringLayout.NORTH, multiplierField, -5, SpringLayout.NORTH, multiplierLabel);
-		springLayout.putConstraint(SpringLayout.WEST, multiplierField, 1, SpringLayout.EAST, multiplierLabel);
-		springLayout.putConstraint(SpringLayout.EAST, multiplierField, 0, SpringLayout.EAST, valueField);
 		springLayout.putConstraint(SpringLayout.WEST, multiplierLabel, 6, SpringLayout.EAST, scrollPane2);
 		springLayout.putConstraint(SpringLayout.SOUTH, multiplierLabel, -107, SpringLayout.SOUTH, this);
 		springLayout.putConstraint(SpringLayout.NORTH, nameField, 16, SpringLayout.NORTH, this);
@@ -130,8 +136,6 @@ public class CustomConstraintPanel extends JPanel {
 		springLayout.putConstraint(SpringLayout.EAST, nameField, -20, SpringLayout.EAST, this);
 		springLayout.putConstraint(SpringLayout.NORTH, nameLabel, 5, SpringLayout.NORTH, nameField);
 		springLayout.putConstraint(SpringLayout.NORTH, typeBox, 35, SpringLayout.SOUTH, nameField);
-		springLayout.putConstraint(SpringLayout.WEST, scrollPane3, 10, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.EAST, scrollPane3, -6, SpringLayout.WEST, typeBox);
 		springLayout.putConstraint(SpringLayout.WEST, nameLabel, 0, SpringLayout.WEST, scrollPane3);
 		springLayout.putConstraint(SpringLayout.NORTH, scrollPane3, 13, SpringLayout.SOUTH, nameField);
 		springLayout.putConstraint(SpringLayout.SOUTH, scrollPane3, -14, SpringLayout.NORTH, list1Name);
@@ -140,7 +144,6 @@ public class CustomConstraintPanel extends JPanel {
 		springLayout.putConstraint(SpringLayout.EAST, scrollPane1, -14, SpringLayout.WEST, scrollPane2);
 		springLayout.putConstraint(SpringLayout.EAST, scrollPane2, -124, SpringLayout.EAST, this);
 		springLayout.putConstraint(SpringLayout.WEST, typeBox, 237, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.EAST, typeBox, -105, SpringLayout.EAST, this);
 		springLayout.putConstraint(SpringLayout.WEST, list1Name, 10, SpringLayout.WEST, this);
 		springLayout.putConstraint(SpringLayout.SOUTH, list1Name, -143, SpringLayout.SOUTH, this);
 		springLayout.putConstraint(SpringLayout.NORTH, list2Name, 0, SpringLayout.NORTH, list1Name);
@@ -149,9 +152,6 @@ public class CustomConstraintPanel extends JPanel {
 		springLayout.putConstraint(SpringLayout.NORTH, scrollPane2, 6, SpringLayout.SOUTH, list2Name);
 		springLayout.putConstraint(SpringLayout.SOUTH, scrollPane2, -22, SpringLayout.SOUTH, this);
 		springLayout.putConstraint(SpringLayout.WEST, list2Name, 0, SpringLayout.WEST, scrollPane2);
-		springLayout.putConstraint(SpringLayout.NORTH, valueField, -1, SpringLayout.NORTH, typeBox);
-		springLayout.putConstraint(SpringLayout.WEST, valueField, 6, SpringLayout.EAST, typeBox);
-		springLayout.putConstraint(SpringLayout.EAST, valueField, -6, SpringLayout.EAST, this);
 	}
 	
 	private ActionListener addTermListener = new ActionListener() {

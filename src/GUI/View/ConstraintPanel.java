@@ -62,6 +62,7 @@ public class ConstraintPanel extends JPanel {
 		addButton = new JButton("+");
 		removeButton = new JButton("-");
 		addButton.addActionListener(addListener);
+		removeButton.addActionListener(removeListener);
 		add(scrollPane1); add(constraintLabel);
 		add(addButton); 
 		add(removeButton);
@@ -112,6 +113,17 @@ public class ConstraintPanel extends JPanel {
 		}
 	};
 	
+	private ActionListener removeListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (constraintList.getSelectedIndex() != -1) {
+				Constraint c = constraintList.getSelectedValue();
+				model.removeConstraint(c);
+				model1.removeElement(c);
+			}
+		}
+	};
+	
 	private ActionListener addListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -146,9 +158,15 @@ public class ConstraintPanel extends JPanel {
 				}
 			}
 			if (choice == 1 || choice == 0) {
-				
-				int min = Integer.parseInt(JOptionPane.showInputDialog("Minimum Number?"));
-				int max = Integer.parseInt(JOptionPane.showInputDialog("Maximum Number?"));
+				int min;
+				int max;
+				try {
+					min = Integer.parseInt(JOptionPane.showInputDialog("Minimum Number?"));
+					max = Integer.parseInt(JOptionPane.showInputDialog("Maximum Number?"));
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(null, "Invalid Entry. Only Numbers Can Be Entered", "ERROR", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				if (choice == 1) {
 					Constraint c;
 					if (min == max) {

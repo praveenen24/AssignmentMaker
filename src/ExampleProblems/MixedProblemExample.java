@@ -97,7 +97,7 @@ public class MixedProblemExample {
 	 * write integer solution
 	 * @param mip problem
 	 */
-	static void write_mip_solution(glp_prob lp)
+	public static void write_mip_solution(glp_prob lp)
 	{
 		int i;
 		int n;

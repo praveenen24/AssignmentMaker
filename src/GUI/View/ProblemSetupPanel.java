@@ -205,26 +205,34 @@ public class ProblemSetupPanel extends JPanel implements Observer {
 			
 			if (isLinearProblem(model.getConstraints())) {
 				LinearProblem lp;
-				if (comboBox.getSelectedItem().toString().equals("Minimize")) {
-					lp = new LinearProblem("LP", model.getObjectList1(), model.getObjectList2(), constraints, GLPKConstants.GLP_MIN, model.getObjectiveValues());
-				} else if (comboBox.getSelectedItem().toString().equals("Maximize")) {
-					lp = new LinearProblem("LP", model.getObjectList1(), model.getObjectList2(), constraints, GLPKConstants.GLP_MAX, model.getObjectiveValues());
-				} else {
-					JOptionPane.showMessageDialog(null, "No Solution Found", "ERROR", JOptionPane.ERROR_MESSAGE);
-					return;
+				try {
+					if (comboBox.getSelectedItem().toString().equals("Minimize")) {
+						lp = new LinearProblem("LP", model.getObjectList1(), model.getObjectList2(), constraints, GLPKConstants.GLP_MIN, model.getObjectiveValues());
+					} else if (comboBox.getSelectedItem().toString().equals("Maximize")) {
+						lp = new LinearProblem("LP", model.getObjectList1(), model.getObjectList2(), constraints, GLPKConstants.GLP_MAX, model.getObjectiveValues());
+					} else {
+						JOptionPane.showMessageDialog(null, "No Solution Found", "ERROR", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					solution.setText(lp.getStringSolution());
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(null, "Problem Cannot be Solved Please Verify Your Data", "ERROR", JOptionPane.ERROR_MESSAGE);
 				}
-				solution.setText(lp.getStringSolution());
 			} else {
-				MixedIntegerProblem mip;
-				if (comboBox.getSelectedItem().toString().equals("Minimize")) {
-					mip = new MixedIntegerProblem("LP", model.getObjectList1(), model.getObjectList2(), constraints, GLPKConstants.GLP_MIN, model.getObjectiveValues());
-				} else if (comboBox.getSelectedItem().toString().equals("Maximize")) {
-					mip = new MixedIntegerProblem("LP", model.getObjectList1(), model.getObjectList2(), constraints, GLPKConstants.GLP_MAX, model.getObjectiveValues());
-				} else {
-					JOptionPane.showMessageDialog(null, "No Solution Found", "ERROR", JOptionPane.ERROR_MESSAGE);
-					return;
+				try {
+					MixedIntegerProblem mip;
+					if (comboBox.getSelectedItem().toString().equals("Minimize")) {
+						mip = new MixedIntegerProblem("LP", model.getObjectList1(), model.getObjectList2(), constraints, GLPKConstants.GLP_MIN, model.getObjectiveValues());
+					} else if (comboBox.getSelectedItem().toString().equals("Maximize")) {
+						mip = new MixedIntegerProblem("LP", model.getObjectList1(), model.getObjectList2(), constraints, GLPKConstants.GLP_MAX, model.getObjectiveValues());
+					} else {
+						JOptionPane.showMessageDialog(null, "No Solution Found", "ERROR", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					solution.setText(mip.getStringSolution());
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(null, "Problem Cannot be Solved Please Verify Your Data", "ERROR", JOptionPane.ERROR_MESSAGE);
 				}
-				solution.setText(mip.getStringSolution());
 			}
 		}
 	};

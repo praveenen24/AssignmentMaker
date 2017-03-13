@@ -422,7 +422,7 @@ public class Track {
         
         // Retrieve solution
         if (ret == 0) {
-            DisplayLP.displayAssignments(lp);
+            //DisplayLP.displayAssignments(lp);
         } else {
             System.out.println("The problem could not be solved");
         }
