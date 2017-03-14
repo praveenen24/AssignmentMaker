@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -58,7 +61,9 @@ public class CustomConstraintPanel extends JPanel {
 		list2Name = new JLabel(model.getList2Name());
 		multiplierLabel = new JLabel("Multiplier");
 		nameField = new JTextField();
+		nameField.setText("Custom Constraint");
 		valueField = new JTextField();
+		valueField.setText("0.0");
 		multiplierField = new JTextField();
 		model1 = new DefaultListModel<AssignmentObject>(); 
 		model2 = new DefaultListModel<AssignmentObject>();
@@ -73,6 +78,8 @@ public class CustomConstraintPanel extends JPanel {
 		addTermButton.addActionListener(addTermListener);
 		removeTermButton = new JButton("Remove");
 		removeTermButton.addActionListener(removeTermListener);
+		valueField.addFocusListener(valueFocusListener);
+		nameField.addFocusListener(nameFocusListener);
 		add(nameLabel); add(nameField);
 		add(valueField); add(scrollPane3);
 		add(typeBox); add(addTermButton);
@@ -83,6 +90,7 @@ public class CustomConstraintPanel extends JPanel {
 		setMinimumSize(new Dimension(500, 325));
 		setBorder(BorderFactory.createLineBorder(Color.black, 2));
 		populateLists();
+		nameField.requestFocus();
 		buildUI();
 	}
 	
@@ -112,7 +120,11 @@ public class CustomConstraintPanel extends JPanel {
 	}
 	
 	public Double getLimit() {
-		return Double.parseDouble(valueField.getText());
+		try {
+			return Double.parseDouble(valueField.getText());
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	
 	private void buildUI() {
@@ -157,13 +169,19 @@ public class CustomConstraintPanel extends JPanel {
 	private ActionListener addTermListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			double multiplier = Double.parseDouble(multiplierField.getText());
+			double multiplier;
+			try {
+				multiplier = Double.parseDouble(multiplierField.getText());
+			} catch (Exception ex) {
+				JOptionPane.showMessageDialog(null, "Multiplier must be a number", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			String value = objectList1.getSelectedValue().getName() + objectList2.getSelectedValue().getName();
 			CustomConstraintVariable varb = new CustomConstraintVariable(multiplier, value);
 			model3.addElement(varb);
 			objectList1.setSelectedValue(null, true);
 			objectList2.setSelectedValue(null, true);
-			multiplierField.setText("0.0");
+			multiplierField.setText(Double.toString(multiplier));
 		}
 	};
 	
@@ -174,5 +192,38 @@ public class CustomConstraintPanel extends JPanel {
 			if (!variables.isSelectionEmpty()) model3.removeElement(variables.getSelectedValue());
 		}
 		
+	};
+	
+	private FocusListener valueFocusListener = new FocusListener() {
+		@Override
+		public void focusGained(FocusEvent e) {
+			// do nothing
+		}
+
+		@Override
+		public void focusLost(FocusEvent e) {
+			try {
+				Double.parseDouble(valueField.getText());
+			} catch (Exception ex) {
+				JOptionPane.showMessageDialog(null, "Limit Must Be A Number", "ERROR", JOptionPane.ERROR_MESSAGE);
+				valueField.requestFocus();
+			}
+		}
+		
+	};
+	
+	private FocusListener nameFocusListener = new FocusListener() {
+
+		@Override
+		public void focusGained(FocusEvent e) {
+			// do nothing
+		}
+		@Override
+		public void focusLost(FocusEvent e) {
+			if (nameField.getText().trim().equals("")) {
+				JOptionPane.showMessageDialog(null, "Custom Constraints Must Have A Valid Name", "ERROR", JOptionPane.ERROR_MESSAGE);
+				nameField.requestFocus();
+			}
+		}
 	};
 }

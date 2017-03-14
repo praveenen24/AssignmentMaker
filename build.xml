@@ -15,7 +15,7 @@
     </target>
 	
 	<target name="run" depends="jar">
-	        <java jar="${dir.jarfile}/module.jar" fork="true"/>
+	        <java jar="${dir.jarfile}/AssignmentMaker.jar" fork="true"/>
 	</target>
 	
 	

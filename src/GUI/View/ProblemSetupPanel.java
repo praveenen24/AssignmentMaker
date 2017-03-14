@@ -105,6 +105,10 @@ public class ProblemSetupPanel extends JPanel implements Observer {
 		setupConstraints(springLayout);
 	}
 
+	public JTextArea getSolution() {
+		return solution;
+	}
+	
 	public void setupConstraints(SpringLayout springLayout) {
 		springLayout.putConstraint(SpringLayout.NORTH, scrollPane1, 9, SpringLayout.SOUTH, listName1);
 		springLayout.putConstraint(SpringLayout.NORTH, removeList1Button, 0, SpringLayout.NORTH, run);

@@ -3,7 +3,9 @@ package GUI.View;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +18,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -35,6 +36,7 @@ public class MainFrame extends JFrame {
 	
 	private JTabbedPane tabs;
 	private Model model;
+	private ProblemSetupPanel panel;
 	
 	public MainFrame() {
 		super("Assignment Maker");
@@ -58,19 +60,20 @@ public class MainFrame extends JFrame {
 		JMenu fileMenu = new JMenu("File");
 		JMenuItem loadData = new JMenuItem("Load Data");
 		JMenuItem saveData = new JMenuItem("Save Data");
-		JMenuItem quickSetup = new JMenuItem("Quick Setup");
+		JMenuItem saveResults = new JMenuItem("Save Results");
 		saveData.addActionListener(saveDataListener);
 		loadData.addActionListener(loadDataListener);
-		quickSetup.addActionListener(quickSetupListener);
+		saveResults.addActionListener(saveResultsListener);
+		saveResults.setToolTipText("Save the Contents of the Solution Panel");
 		fileMenu.add(saveData);
 		fileMenu.add(loadData);
-		fileMenu.add(quickSetup);
+		fileMenu.add(saveResults);
 		bar.add(fileMenu);
 		setJMenuBar(bar);
 	}
 	
 	public void setupTabs(Model m) {
-		ProblemSetupPanel panel = new ProblemSetupPanel(m);
+		panel = new ProblemSetupPanel(m);
 		m.addObserver(panel);
 		ConstraintPanel constraints = new ConstraintPanel(m);
 		tabs.add("Problem Setup", panel);
@@ -156,6 +159,26 @@ public class MainFrame extends JFrame {
 					SpreadSheetWriter writer = new SpreadSheetWriter(file, model);
 					writer.save();
 				
+			}
+		}
+	};
+	
+	private ActionListener saveResultsListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JFileChooser chooser = new JFileChooser();
+			chooser.setDialogTitle("Save Data");	
+			int choice = chooser.showSaveDialog(null);
+			if (choice == JFileChooser.APPROVE_OPTION) {
+				File file = new File(chooser.getSelectedFile() + ".txt");
+				try {
+					JTextArea solution = panel.getSolution();
+					BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+					solution.write(writer);
+					writer.close();
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(null, "Unfortunately There Was An Error. Please Try Again.", "ERROR", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		}
 	};

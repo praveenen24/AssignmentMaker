@@ -65,9 +65,9 @@ public class MixedIntegerProblem extends LinearProblem {
 		String output;
 		// Retrieve solution
 		if (ret == 0) {
-            output = DisplayLP.getMipSolution(lp);
+            output = DisplayLP.getMipSolution(lp, varbNames);
         } else {
-        	output = "The problem could not be solved";
+        	output = "No Feasible Solution Can Be Found";
         }
 
         // Free memory

@@ -30,7 +30,7 @@ public class LinearProblem {
 	protected ObjectList objectList2;
 	protected int problemType;
 	protected int columnSize;
-
+	protected Map<String, List<AssignmentObject>> varbNames;
 
 	public LinearProblem(String name, ObjectList objectList1, ObjectList objectList2, 
 			List<Constraint> constraints, int problemType, Map<String, Double> objectiveValues) {
@@ -44,6 +44,7 @@ public class LinearProblem {
 		this.objectiveValues = objectiveValues;
 		indexes = new HashMap<String, Integer>();
 		this.assignmentVarbs = new ArrayList<AssignmentVariable>();
+		varbNames = new HashMap<String, List<AssignmentObject>>();
 		columnSize = this.objectList1.size() * this.objectList2.size();
 		if (constraints.size() > 0) GLPK.glp_add_rows(lp, this.constraints.size());
 		createVariables();
@@ -57,7 +58,9 @@ public class LinearProblem {
 		int index2 = 0;
 		for (AssignmentObject o1 : objectList1) {
 			for (AssignmentObject o2 : objectList2) {
+				List<AssignmentObject> varbs = new ArrayList<AssignmentObject>();
 				String key = o1.getName()+o2.getName();
+				varbs.add(o1); varbs.add(o2); varbNames.put(key, varbs);
 				assignmentVarbs.add(new AssignmentVariable(identifier, key, 
 						new Bound(GLPKConstants.GLP_DB, 0, 1), objectiveValues.get(key)));
 				identifier++;
@@ -114,6 +117,10 @@ public class LinearProblem {
 		return name;
 	}
 	
+	public Map<String, List<AssignmentObject>> getVarbNames() {
+		return varbNames;
+	}
+	
 	public void solve() {
 		// Solve model
         parm = new glp_smcp();
@@ -139,7 +146,7 @@ public class LinearProblem {
         String output = "";
         // Retrieve solution
         if (ret == 0) {
-            output = DisplayLP.getOutput(lp);
+            output = DisplayLP.getOutput(lp, varbNames);
         } else {
         	output = "The problem could not be solved";
         }

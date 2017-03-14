@@ -36,8 +36,8 @@ public class SpreadSheetReader {
 		XSSFSheet sheet = workBook.getSheetAt(0);
 		XSSFRow firstRow = sheet.getRow(0);
 		
-		list1 = new ObjectList("List1");
-		list2 = new ObjectList("List2");
+		list1 = new ObjectList(model.getList1Name());
+		list2 = new ObjectList(model.getList2Name());
 		objectiveValues = new HashMap<String, Double>();
 		List<String> errors = new ArrayList<String>();
 		for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {

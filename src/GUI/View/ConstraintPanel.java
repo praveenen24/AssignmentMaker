@@ -128,8 +128,12 @@ public class ConstraintPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			ArrayList<Constraint> constraints = new ArrayList<Constraint>();
+			JButton button = new JButton("Test");
+			button.setToolTipText("Testing");
+			String horizontalName = "Limit " + model.getList2Name() + " per " + model.getList1Name();
+			String verticalName = "Limit " + model.getList1Name() + " per " + model.getList2Name();
 			int choice = JOptionPane.showOptionDialog(null, "What kind of Restriction?", "Restriction Type", JOptionPane.YES_NO_CANCEL_OPTION, 
-					JOptionPane.QUESTION_MESSAGE, null, new String[]{"Horizontal Bound","Vertical Constraint","Custom"}, null);
+					JOptionPane.QUESTION_MESSAGE, null, new String[]{horizontalName, verticalName,"Custom"}, null);
 			if (choice == 2) {
 				if (!model.getObjectList1().isEmpty() && !model.getObjectList2().isEmpty()) {
 					CustomConstraintPanel panel = new CustomConstraintPanel(model);
@@ -153,16 +157,20 @@ public class ConstraintPanel extends JPanel {
 					}
 					tempFrame.dispose();
 				} else {
-					JOptionPane.showMessageDialog(null, "There must be objects in both lists", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "There Must Be Objects In Both Lists To Create A Custom Constraint", "Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 			}
 			if (choice == 1 || choice == 0) {
 				int min;
 				int max;
+				String minInput = null;
+				String maxInput = null;
 				try {
-					min = Integer.parseInt(JOptionPane.showInputDialog("Minimum Number?"));
-					max = Integer.parseInt(JOptionPane.showInputDialog("Maximum Number?"));
+					minInput = JOptionPane.showInputDialog("Minimum Number?");
+					min = Integer.parseInt(minInput);
+					maxInput = JOptionPane.showInputDialog("Maximum Number?");
+					max = Integer.parseInt(maxInput);
 				} catch (Exception ex) {
 					JOptionPane.showMessageDialog(null, "Invalid Entry. Only Numbers Can Be Entered", "ERROR", JOptionPane.ERROR_MESSAGE);
 					return;
@@ -170,20 +178,20 @@ public class ConstraintPanel extends JPanel {
 				if (choice == 1) {
 					Constraint c;
 					if (min == max) {
-						c = new VerticalConstraint("Vertical", new Bound(GLPKConstants.GLP_FX, min, max));
+						c = new VerticalConstraint(verticalName + " Bound", new Bound(GLPKConstants.GLP_FX, min, max));
 						model.addConstraint(c);
 					} else {
-						c = new VerticalConstraint("Vertical", new Bound(GLPKConstants.GLP_DB, min, max));
+						c = new VerticalConstraint(verticalName + " Bound", new Bound(GLPKConstants.GLP_DB, min, max));
 						model.addConstraint(c);
 					}
 					model1.addElement(c);
 				} else if (choice == 0) {
 					Constraint c;
 					if (min == max) {
-						c = new HorizontalConstraint("Horizontal", new Bound(GLPKConstants.GLP_FX, min, max));
+						c = new HorizontalConstraint(horizontalName + " Bound", new Bound(GLPKConstants.GLP_FX, min, max));
 						model.addConstraint(c);
 					} else {
-						c = new HorizontalConstraint("Horizontal", new Bound(GLPKConstants.GLP_DB, min, max));
+						c = new HorizontalConstraint(horizontalName + " Bound", new Bound(GLPKConstants.GLP_DB, min, max));
 						model.addConstraint(c);
 					}
 					model1.addElement(c);
