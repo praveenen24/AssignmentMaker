@@ -23,6 +23,7 @@ import javax.swing.SpringLayout;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.gnu.glpk.GLPK;
 import org.gnu.glpk.GLPKConstants;
 
 import GUI.Model.Model;
@@ -218,7 +219,12 @@ public class ProblemSetupPanel extends JPanel implements Observer {
 						JOptionPane.showMessageDialog(null, "No Solution Found", "ERROR", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					solution.setText(lp.getStringSolution());
+					String finalSol = lp.getStringSolution();
+					if (GLPK.glp_get_status(lp.getProblem()) == (GLPKConstants.GLP_OPT)) {
+						solution.setText(finalSol);
+					} else {
+						JOptionPane.showMessageDialog(null, "No Feasible Solution Can be Found. Please Verify and Alter Your Restrictions.", "ERROR", JOptionPane.ERROR_MESSAGE);
+					}
 				} catch (Exception ex) {
 					JOptionPane.showMessageDialog(null, "Problem Cannot be Solved Please Verify Your Data", "ERROR", JOptionPane.ERROR_MESSAGE);
 				}
@@ -233,7 +239,12 @@ public class ProblemSetupPanel extends JPanel implements Observer {
 						JOptionPane.showMessageDialog(null, "No Solution Found", "ERROR", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					solution.setText(mip.getStringSolution());
+					String finalSol = mip.getStringSolution();
+					if (GLPK.glp_get_status(mip.getProblem()) == (GLPKConstants.GLP_OPT)) {
+						solution.setText(finalSol);
+					} else {
+						JOptionPane.showMessageDialog(null, "No Feasible Solution Can be Found. Please Verify and Alter Your Restrictions.", "ERROR", JOptionPane.ERROR_MESSAGE); 
+					}
 				} catch (Exception ex) {
 					JOptionPane.showMessageDialog(null, "Problem Cannot be Solved Please Verify Your Data", "ERROR", JOptionPane.ERROR_MESSAGE);
 				}

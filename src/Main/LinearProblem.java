@@ -85,6 +85,10 @@ public class LinearProblem {
 		}
 	}
 	
+	public glp_prob getProblem() {
+		return lp;
+	}
+	
 	public void setupObjective() {
 		GLPK.glp_set_obj_name (lp , "TOTAL");
 		GLPK.glp_set_obj_dir (lp , problemType);

@@ -33,11 +33,11 @@ import Main.Constraint;
 import Main.ObjectList;
 
 public class MainFrame extends JFrame {
-	
+
 	private JTabbedPane tabs;
 	private Model model;
 	private ProblemSetupPanel panel;
-	
+
 	public MainFrame() {
 		super("Assignment Maker");
 		String list1Name = JOptionPane.showInputDialog(this, "Name of Object List 1 (Defaulted to List1)", "List 1 Name", JOptionPane.QUESTION_MESSAGE);
@@ -71,7 +71,7 @@ public class MainFrame extends JFrame {
 		bar.add(fileMenu);
 		setJMenuBar(bar);
 	}
-	
+
 	public void setupTabs(Model m) {
 		panel = new ProblemSetupPanel(m);
 		m.addObserver(panel);
@@ -79,7 +79,7 @@ public class MainFrame extends JFrame {
 		tabs.add("Problem Setup", panel);
 		tabs.add("Restrictions", constraints);
 	}
-	
+
 	public Model initialize() {
 		String list1Name = JOptionPane.showInputDialog("Name of List 1?");
 		String list2Name = JOptionPane.showInputDialog("Name of List 2?");
@@ -89,13 +89,13 @@ public class MainFrame extends JFrame {
 		String rowMax = JOptionPane.showInputDialog("Maximum # of " + list2Name + " a " + list1Name + " must be assigned to?");
 		String colMin = JOptionPane.showInputDialog("Minimum # of " + list1Name + " a " + list2Name + " must have?");
 		String colMax = JOptionPane.showInputDialog("Maximum # of " + list1Name + " a " + list2Name + " must have?");
-		
+
 		ObjectList list1 = createObjects(list1Name, Integer.parseInt(numbList1));
 		ObjectList list2 = createObjects(list2Name, Integer.parseInt(numbList2));
 		ArrayList<Constraint> constraints = createHorizontalConstraints(Integer.parseInt(numbList1), Integer.parseInt(numbList2),
-																		Integer.parseInt(rowMin), Integer.parseInt(rowMax));
+				Integer.parseInt(rowMin), Integer.parseInt(rowMax));
 		constraints.addAll(createVerticalConstraints(Integer.parseInt(numbList1), Integer.parseInt(numbList2),
-													Integer.parseInt(colMin), Integer.parseInt(colMax)));
+				Integer.parseInt(colMin), Integer.parseInt(colMax)));
 		Model model = new Model(list1, list2, constraints);
 		return model;
 	}
@@ -127,7 +127,7 @@ public class MainFrame extends JFrame {
 		}
 		return constraints;
 	}
-	
+
 	public ArrayList<Constraint> createVerticalConstraints(int rows, int columns, int lowerBound, int upperBound) {
 		ArrayList<Constraint> constraints = new ArrayList<Constraint>();
 		for (int i = 1; i < columns+1; i++) {
@@ -155,14 +155,14 @@ public class MainFrame extends JFrame {
 			int choice = chooser.showSaveDialog(null);
 			if (choice == JFileChooser.APPROVE_OPTION) {
 				File file = chooser.getSelectedFile();
-				
-					SpreadSheetWriter writer = new SpreadSheetWriter(file, model);
-					writer.save();
-				
+
+				SpreadSheetWriter writer = new SpreadSheetWriter(file, model);
+				writer.save();
+
 			}
 		}
 	};
-	
+
 	private ActionListener saveResultsListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -182,7 +182,7 @@ public class MainFrame extends JFrame {
 			}
 		}
 	};
-	
+
 	private ActionListener loadDataListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -213,10 +213,10 @@ public class MainFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Incorrect File Format. Must be Excel File (.xlsx)", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
-			
+
 		}
 	};
-	
+
 	private ActionListener quickSetupListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -232,20 +232,24 @@ public class MainFrame extends JFrame {
 			String rowMax = JOptionPane.showInputDialog("Maximum # of " + list2Name + " a " + list1Name + " must be assigned to?");
 			String colMin = JOptionPane.showInputDialog("Minimum # of " + list1Name + " a " + list2Name + " must have?");
 			String colMax = JOptionPane.showInputDialog("Maximum # of " + list1Name + " a " + list2Name + " must have?");
-			
+
 			ObjectList list1 = createObjects(list1Name, Integer.parseInt(numbList1));
 			ObjectList list2 = createObjects(list2Name, Integer.parseInt(numbList2));
 			ArrayList<Constraint> constraints = createHorizontalConstraints(Integer.parseInt(numbList1), Integer.parseInt(numbList2),
-																			Integer.parseInt(rowMin), Integer.parseInt(rowMax));
+					Integer.parseInt(rowMin), Integer.parseInt(rowMax));
 			constraints.addAll(createVerticalConstraints(Integer.parseInt(numbList1), Integer.parseInt(numbList2),
-														Integer.parseInt(colMin), Integer.parseInt(colMax)));
+					Integer.parseInt(colMin), Integer.parseInt(colMax)));
 			model.setObjectList1(list1);
 			model.setObjectList2(list2);
 		}
 	};
-	
+
 	public static void main(String[] args) {
-		MainFrame f = new MainFrame();
+		try {
+			MainFrame f = new MainFrame();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "An Unexpected Error Occurred. Please Verify and Try Again", "ERROR", JOptionPane.ERROR);
+		}
 	}
-	
+
 }
