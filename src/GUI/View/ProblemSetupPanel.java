@@ -358,7 +358,7 @@ public class ProblemSetupPanel extends JPanel implements Observer {
 		}
 	};
 
-	public ArrayList<Constraint> createHorizontalConstraints(String name, int rows, int columns, int lowerBound, int upperBound) {
+	public static ArrayList<Constraint> createHorizontalConstraints(String name, int rows, int columns, int lowerBound, int upperBound) {
 		ArrayList<Constraint> constraints = new ArrayList<Constraint>();
 		int index = 1;
 		for (int i = 1; i < rows+1; i++) {
@@ -377,7 +377,7 @@ public class ProblemSetupPanel extends JPanel implements Observer {
 		return constraints;
 	}
 	
-	public ArrayList<Constraint> createVerticalConstraints(String name, int rows, int columns, int lowerBound, int upperBound) {
+	public static ArrayList<Constraint> createVerticalConstraints(String name, int rows, int columns, int lowerBound, int upperBound) {
 		ArrayList<Constraint> constraints = new ArrayList<Constraint>();
 		for (int i = 1; i < columns+1; i++) {
 			int index = i;
