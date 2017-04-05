@@ -12,12 +12,4 @@ public class AlgebraicSolver {
 		return (double) scriptEngine.eval(expression);
 	}
 
-	public static void main(String[] args) {
-		try {
-			System.out.println(calculateExpression("((40+2.0) * 3) / 2.4"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 }

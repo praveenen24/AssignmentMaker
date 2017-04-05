@@ -19,7 +19,6 @@ import Main.VerticalConstraint;
 public class TAAutomationExample {
 	
 	public static void main(String[] args) {
-		System.loadLibrary("glpk-java-1.7.0.jar");
 		System.out.println("---------------Problem----------------");
 		System.out.println("    | Course 1 | Course 2 | Course 3 |");
 		System.out.println("--------------------------------------");
@@ -70,5 +69,4 @@ public class TAAutomationExample {
 		LinearProblem lp = new LinearProblem("lp", objectList1, objectList2, constraints, GLPKConstants.GLP_MIN, objectiveValues);
 		lp.solve();
 	}
-
 }

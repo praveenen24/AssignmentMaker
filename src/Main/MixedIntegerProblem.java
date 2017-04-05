@@ -9,8 +9,6 @@ import org.gnu.glpk.GLPK;
 import org.gnu.glpk.GLPKConstants;
 import org.gnu.glpk.glp_iocp;
 
-import ExampleProblems.MixedProblemExample;
-
 public class MixedIntegerProblem extends LinearProblem {
 
 	private glp_iocp iocp;

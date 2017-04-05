@@ -7,8 +7,6 @@ import java.util.Map.Entry;
 import org.gnu.glpk.GLPK;
 import org.gnu.glpk.glp_prob;
 
-import GUI.Model.Model;
-
 public class DisplayLP {
 	
     /**

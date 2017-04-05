@@ -6,8 +6,6 @@ import org.gnu.glpk.SWIGTYPE_p_int;
 import org.gnu.glpk.glp_prob;
 import org.gnu.glpk.glp_smcp;
 
-import Main.DisplayLP;
-
 public class Track {
 
 	public static void main(String[] args) {

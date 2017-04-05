@@ -223,9 +223,11 @@ public class ProblemSetupPanel extends JPanel implements Observer {
 					if (GLPK.glp_get_status(lp.getProblem()) == (GLPKConstants.GLP_OPT)) {
 						solution.setText(finalSol);
 					} else {
+						solution.setText("");
 						JOptionPane.showMessageDialog(null, "No Feasible Solution Can be Found. Please Verify and Alter Your Restrictions.", "ERROR", JOptionPane.ERROR_MESSAGE);
 					}
 				} catch (Exception ex) {
+					solution.setText("");
 					JOptionPane.showMessageDialog(null, "Problem Cannot be Solved Please Verify Your Data", "ERROR", JOptionPane.ERROR_MESSAGE);
 				}
 			} else {
@@ -243,9 +245,11 @@ public class ProblemSetupPanel extends JPanel implements Observer {
 					if (GLPK.glp_get_status(mip.getProblem()) == (GLPKConstants.GLP_OPT)) {
 						solution.setText(finalSol);
 					} else {
+						solution.setText("");
 						JOptionPane.showMessageDialog(null, "No Feasible Solution Can be Found. Please Verify and Alter Your Restrictions.", "ERROR", JOptionPane.ERROR_MESSAGE); 
 					}
 				} catch (Exception ex) {
+					solution.setText("");
 					JOptionPane.showMessageDialog(null, "Problem Cannot be Solved Please Verify Your Data", "ERROR", JOptionPane.ERROR_MESSAGE);
 				}
 			}

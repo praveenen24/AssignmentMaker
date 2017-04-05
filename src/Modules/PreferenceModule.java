@@ -11,7 +11,6 @@ import org.gnu.glpk.GLPKConstants;
 import Main.AssignmentObject;
 import Main.Bound;
 import Main.Constraint;
-import Main.LinearProblem;
 import Main.ObjectList;
 
 /**

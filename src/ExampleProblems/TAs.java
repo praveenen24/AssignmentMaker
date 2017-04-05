@@ -1,8 +1,4 @@
 package ExampleProblems;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.gnu.glpk.GLPK;
 import org.gnu.glpk.GLPKConstants;
 import org.gnu.glpk.SWIGTYPE_p_double;
